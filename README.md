@@ -24,14 +24,16 @@ AutoSQL은 자연어 입력을 기반으로 SQL을 생성하는 프로젝트입�
 pip install -r requirements.txt
 ```
 
-### 4️⃣ OpenAI API Key 설정
+### 4️⃣ 환경 변수 설정
 
-```bash
-export OPENAI_API_KEY="your-api-key-here"
+다음 환경 변수들은 설정되어야 합니다. `.env` 파일을 생성하여 다음과 같이 관리할 수 있습니다:
+
 ```
-또는 `.env` 파일을 생성하여 관리:
-```bash
-echo "OPENAI_API_KEY=your-api-key-here" > .env
+OPENAI_API_KEY=your-api-key-here
+LANGCHAIN_TRACING_V2=true
+LANGCHAIN_PROJECT=autosql
+LANGCHAIN_ENDPOINT=https://api.smith.langchain.com
+LANGCHAIN_API_KEY=your-langchain-api-key
 ```
 
 ---
