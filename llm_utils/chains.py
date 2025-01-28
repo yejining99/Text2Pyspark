@@ -77,12 +77,13 @@ def create_query_maker_chain(llm):
             MessagesPlaceholder(variable_name="searched_columns"),
             (
                 "system",
-                """최종 형태는 아래와 같아야합니다.
-                SELECT COUNT(DISTINCT user_id) FROM users WHERE user_id = 1
-                참고한 테이블 목록
-                users
-                참고한 컬럼 목록
-                user_id
+                """최종 형태는 반드시 아래와 같아야합니다.
+                최종 쿼리:
+                    SELECT COUNT(DISTINCT user_id) FROM stg_users WHERE user_id = 1
+                참고한 테이블 목록:
+                    stg_users, dim_users
+                참고한 컬럼 목록:
+                    stg_users.user_id, dim_users.user_id
                 """,
             ),
         ]
