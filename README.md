@@ -24,6 +24,28 @@ AutoSQL은 자연어 입력을 기반으로 SQL을 생성하는 프로젝트입�
 pip install -r requirements.txt
 ```
 
+### 2️⃣ 패키지 설치
+
+`setup.py`를 통해 패키지를 설치할 수 있습니다:
+
+```bash
+python setup.py install
+```
+
+### 3️⃣ CLI 명령어 사용
+
+설치 후, `autosql` 명령어를 사용할 수 있습니다. 예를 들어, Streamlit 앱을 실행하려면 다음과 같이 입력합니다:
+
+```bash
+autosql --run-streamlit
+```
+
+기본 포트는 8501이며, 다른 포트를 사용하려면 `-p` 옵션을 사용하세요:
+
+```bash
+autosql --run-streamlit -p 8502
+```
+
 ### 4️⃣ 환경 변수 설정
 
 다음 환경 변수들은 설정되어야 합니다. `.env` 파일을 생성하여 다음과 같이 관리할 수 있습니다:
