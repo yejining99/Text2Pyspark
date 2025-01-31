@@ -1,10 +1,15 @@
 # setup.py
 from setuptools import setup, find_packages
 
+with open("README.md", "r", encoding="utf-8") as fh:
+    long_description = fh.read()
+
 setup(
     name="lang2sql",  # 패키지 이름
-    version="0.1.0",  # 버전
+    version="0.1.1",  # 버전
     description="Lang2SQL - Query Generator for Data Warehouse",
+    long_description=long_description,
+    long_description_content_type="text/markdown",
     author="ehddnr301",
     packages=find_packages(),  # my_package를 자동으로 찾음
     install_requires=[
