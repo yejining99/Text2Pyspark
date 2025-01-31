@@ -1,0 +1,32 @@
+name: Publish Python Package to PyPI
+
+on:
+  push:
+    tags:
+      - "v*"  # v로 시작하는 태그 (예: v1.0.0)
+
+jobs:
+  deploy:
+    name: Build and Publish
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.x"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip setuptools wheel twine
+
+      - name: Build package (setup.py)
+        run: python setup.py sdist bdist_wheel
+
+      - name: Publish to PyPI
+        env:
+          PYPI_API_TOKEN: ${{ secrets.PYPI_API_TOKEN }}
+        run: twine upload --username __token__ --password $PYPI_API_TOKEN dist/*
