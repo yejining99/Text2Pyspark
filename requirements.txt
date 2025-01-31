@@ -4,3 +4,7 @@ langchain==0.3.14
 langchain-community==0.3.14
 openai==1.59.8
 langchain-openai==0.3.0
+streamlit==1.41.1
+setuptools
+wheel
+twine
