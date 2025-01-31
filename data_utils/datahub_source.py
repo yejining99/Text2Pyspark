@@ -3,9 +3,12 @@ from datahub.emitter.mcp import MetadataChangeProposalWrapper
 from datahub.metadata.schema_classes import DatasetPropertiesClass, SchemaMetadataClass
 from datahub.emitter.rest_emitter import DatahubRestEmitter
 
+
 class DatahubMetadataFetcher:
     def __init__(self, gms_server="http://localhost:8080", extra_headers={}):
-        self.emitter = DatahubRestEmitter(gms_server=gms_server, extra_headers=extra_headers)
+        self.emitter = DatahubRestEmitter(
+            gms_server=gms_server, extra_headers=extra_headers
+        )
         self.datahub_graph = self.emitter.to_graph()
 
     def get_urns(self):
@@ -15,8 +18,7 @@ class DatahubMetadataFetcher:
     def get_table_name(self, urn):
         # URN에 대한 테이블 이름 가져오기
         dataset_properties = self.datahub_graph.get_aspect(
-            urn,
-            aspect_type=DatasetPropertiesClass
+            urn, aspect_type=DatasetPropertiesClass
         )
         if dataset_properties:
             return dataset_properties.get("name", None)
@@ -25,8 +27,7 @@ class DatahubMetadataFetcher:
     def get_table_description(self, urn):
         # URN에 대한 테이블 설명 가져오기
         dataset_properties = self.datahub_graph.get_aspect(
-            urn,
-            aspect_type=DatasetPropertiesClass
+            urn, aspect_type=DatasetPropertiesClass
         )
         if dataset_properties:
             return dataset_properties.get("description", None)
@@ -35,30 +36,15 @@ class DatahubMetadataFetcher:
     def get_column_names_and_descriptions(self, urn):
         # URN에 대한 컬럼 이름 및 설명 가져오기
         schema_metadata = self.datahub_graph.get_aspect(
-            urn,
-            aspect_type=SchemaMetadataClass
+            urn, aspect_type=SchemaMetadataClass
         )
         columns = []
         if schema_metadata:
             for field in schema_metadata.fields:
-                columns.append({
-                    "column_name": field.fieldPath,
-                    "column_description": field.description
-                })
+                columns.append(
+                    {
+                        "column_name": field.fieldPath,
+                        "column_description": field.description,
+                    }
+                )
         return columns
-
-# # 사용 예시
-# fetcher = DatahubMetadataFetcher()
-# urns = fetcher.get_urns()
-
-# for urn in urns:
-#     table_name = fetcher.get_table_name(urn)
-#     table_description = fetcher.get_table_description(urn)
-#     columns = fetcher.get_column_names_and_descriptions(urn)
-
-#     print(f"Table Name: {table_name}")
-#     print(f"Table Description: {table_description}")
-#     for column in columns:
-#         print(f"Column Name: {column['column_name']}")
-#         print(f"Column Description: {column['column_description']}")
-#     print("-" * 60)

@@ -16,7 +16,6 @@ user_query = st.text_area(
 def summarize_total_tokens(data):
     total_tokens = 0
     for item in data:
-        print(item)
         token_usage = getattr(item, "usage_metadata", {})
         total_tokens += token_usage.get("total_tokens", 0)
     return total_tokens
