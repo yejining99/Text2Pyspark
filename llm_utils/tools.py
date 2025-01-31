@@ -4,7 +4,17 @@ from langchain.tools import tool
 
 from data_utils.datahub_source import DatahubMetadataFetcher
 
-fetcher = DatahubMetadataFetcher()
+fetcher = None
+
+
+def set_gms_server(gms_server: str):
+    global fetcher
+
+    try:
+        fetcher = DatahubMetadataFetcher(gms_server=gms_server)
+    except ValueError as e:
+        # 유효하지 않은 GMS 서버 주소일 경우 예외를 발생시킴
+        raise ValueError(f"GMS 서버 설정 실패: {str(e)}")
 
 
 @tool

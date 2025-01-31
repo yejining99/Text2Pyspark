@@ -6,7 +6,7 @@ with open("README.md", "r", encoding="utf-8") as fh:
 
 setup(
     name="lang2sql",  # 패키지 이름
-    version="0.1.2",  # 버전
+    version="0.1.4",  # 버전
     description="Lang2SQL - Query Generator for Data Warehouse",
     long_description=long_description,
     long_description_content_type="text/markdown",
