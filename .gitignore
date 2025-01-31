@@ -1,4 +1,6 @@
 .env
 __pycache__/
 build/
-autosql.egg-info/
+lang2sql.egg-info/
+dist/
+.pypirc

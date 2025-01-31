@@ -60,12 +60,21 @@ LANGCHAIN_API_KEY=your-langchain-api-key
 
 ---
 
-## 🎯 사용 방법
+## 🎯 동작
 
 1. **자연어 입력을 기반으로 테이블 조회**
 2. **테이블의 스키마 및 컬럼 정보 확인**
 3. **최적의 SQL 쿼리 생성**
 4. **쿼리 최적화 실행**
+
+---
+
+## 빌드 방법
+
+```
+python setup.py sdist bdist_wheel
+twine upload dist/*
+```
 
 ---
 
