@@ -1,6 +1,6 @@
-# AutoSQL
+# Lang2SQL
 
-AutoSQL은 자연어 입력을 기반으로 SQL을 생성하는 프로젝트입니다. LangGraph, DataHub를 활용하여 데이터를 분석하고 최적의 SQL 쿼리를 생성 및 최적화합니다.
+Lang2SQL은 자연어 입력을 기반으로 SQL을 생성하는 프로젝트입니다. LangGraph, DataHub를 활용하여 데이터를 분석하고 최적의 SQL 쿼리를 생성 및 최적화합니다.
 
 ## 📌 프로젝트 목표
 1. 자연어 입력을 기반으로 SQL 쿼리를 자동으로 생성
@@ -34,16 +34,22 @@ python setup.py install
 
 ### 3️⃣ CLI 명령어 사용
 
-설치 후, `autosql` 명령어를 사용할 수 있습니다. 예를 들어, Streamlit 앱을 실행하려면 다음과 같이 입력합니다:
+설치 후, `lang2sql` 명령어를 사용할 수 있습니다. 예를 들어, Streamlit 앱을 실행하려면 다음과 같이 입력합니다:
 
 ```bash
-autosql --run-streamlit
+lang2sql --run-streamlit
 ```
 
 기본 포트는 8501이며, 다른 포트를 사용하려면 `-p` 옵션을 사용하세요:
 
 ```bash
-autosql --run-streamlit -p 8502
+lang2sql --run-streamlit -p 8502
+```
+
+DataHub GMS 서버 URL을 설정하려면 `--datahub_server` 옵션을 사용하세요. 기본값은 `http://localhost:8080`입니다:
+
+```bash
+lang2sql --datahub_server http://your-datahub-server:8080 --run-streamlit
 ```
 
 ### 4️⃣ 환경 변수 설정
@@ -69,15 +75,24 @@ LANGCHAIN_API_KEY=your-langchain-api-key
 
 ---
 
-## 빌드 방법
+## 빌드 및 배포 방법
+
+### 수동 빌드
 
 ```
 python setup.py sdist bdist_wheel
 twine upload dist/*
 ```
 
+### GitHub Actions를 통한 자동 배포
+
+GitHub 저장소에 태그를 `v*` 형식으로 푸시하면, GitHub Actions가 자동으로 PyPI에 패키지를 배포합니다. 이 과정은 `.github/workflows/pypi-release.yml` 파일에 정의되어 있습니다.
+
+- **태그 형식**: `v1.0.0` 등
+- **필요한 설정**: GitHub Secrets에 `PYPI_API_TOKEN`을 설정해야 합니다.
+
 ---
 
-## 📄 라이선스
+## 라이선스
 MIT License
 
