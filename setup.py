@@ -13,7 +13,6 @@ setup(
     description="Lang2SQL - Query Generator for Data Warehouse",
     long_description=long_description,
     long_description_content_type="text/markdown",
-    author="ehddnr301",
     packages=find_packages(),  # my_package를 자동으로 찾음
     install_requires=[
         "langgraph==0.2.62",
