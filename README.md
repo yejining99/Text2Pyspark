@@ -62,6 +62,7 @@ LANGCHAIN_TRACING_V2=true
 LANGCHAIN_PROJECT=autosql
 LANGCHAIN_ENDPOINT=https://api.smith.langchain.com
 LANGCHAIN_API_KEY=your-langchain-api-key
+DATAHUB_SERVER=http://localhost:8080
 ```
 
 ---

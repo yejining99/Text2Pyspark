@@ -1,85 +1,121 @@
+import json
 from dotenv import load_dotenv
-
-from typing import Sequence
-from langchain_core.messages import BaseMessage
-from langgraph.prebuilt import ToolNode
-from langgraph.graph import END, MessageGraph
 
 load_dotenv()
 
-from llm_utils.chains import tool_choice_chain, table_filter_chain, query_maker_chain
-from llm_utils.tools import get_table_info, get_column_info
+from typing_extensions import TypedDict, Annotated
+from langgraph.graph import END, StateGraph
+from langgraph.graph.message import add_messages
 
-TOOL_CHOICE = "tool_choice"
+from llm_utils.chains import (
+    query_refiner_chain,
+    query_maker_chain,
+)
+
+from llm_utils.tools import get_info_from_db
+
+# 노드 식별자 정의
+QUERY_REFINER = "query_refiner"
+GET_TABLE_INFO = "get_table_info"
 TOOL = "tool"
 TABLE_FILTER = "table_filter"
 QUERY_MAKER = "query_maker"
-tool_node = ToolNode([get_table_info, get_column_info])
 
 
-def tool_choice_node(state: Sequence[BaseMessage]):
-    tool_choice = (
-        state[-1].tool_choice if hasattr(state[-1], "tool_choice") else "get_table_info"
-    )
-    res = tool_choice_chain.invoke(
-        input={"user_input": [state[-1].content], "tool_choice": [tool_choice]}
-    )
-
-    return res
-
-
-def table_filter_node(state: Sequence[BaseMessage]):
-
-    if state[-1].name == "get_table_info":
-        res = table_filter_chain.invoke(
-            input={
-                "user_input": [state[0].content],
-                "searched_tables": [state[-1].content],
-            }
-        )
-        res.tool_choice = "get_column_info"
-        return res
-
-    elif len(state) >= 4:
-        state[-1].is_end = True
-        return state
+# 상태 타입 정의 (추가 상태 정보와 메시지들을 포함)
+class QueryMakerState(TypedDict):
+    messages: Annotated[list, add_messages]
+    user_database_env: str
+    searched_tables: dict[str, dict[str, str]]
+    best_practice_query: str
+    refined_input: str
+    generated_query: str
 
 
-def query_maker_node(state: Sequence[BaseMessage]):
-    search_columns = [i.content for i in state if i.name == "get_column_info"]
-
-    res = query_maker_chain.invoke(
+# 노드 함수: QUERY_REFINER 노드
+def query_refiner_node(state: QueryMakerState):
+    res = query_refiner_chain.invoke(
         input={
-            "user_input": [state[0].content],
-            "searched_tables": [state[3].content],
-            "searched_columns": search_columns,
+            "user_input": [state["messages"][0].content],
+            "user_database_env": [state["user_database_env"]],
+            "best_practice_query": [state["best_practice_query"]],
         }
     )
-    return res
+    state["messages"].append(res)
+    state["refined_input"] = res
+    return state
 
 
-# 조건부 경로 추가
-def should_end(state: Sequence[BaseMessage]):
-    # 종료 조건을 정의하는 함수
-    return len(state) > 0 and hasattr(state[-1], "is_end") and state[-1].is_end
+def get_table_info_node(state: QueryMakerState):
+    from langchain_community.vectorstores import FAISS
+    from langchain_openai import OpenAIEmbeddings
+
+    embeddings = OpenAIEmbeddings(model="text-embedding-3-small")
+    try:
+        db = FAISS.load_local(
+            "/home/pseudo.dwlee/autosql/table_info_db",
+            embeddings,
+            allow_dangerous_deserialization=True,
+        )
+    except:
+        documents = get_info_from_db()
+        db = FAISS.from_documents(documents, embeddings)
+        db.save_local("/home/pseudo.dwlee/autosql/table_info_db")
+        print("table_info_db not found")
+    doc_res = db.similarity_search(state["messages"][-1].content)
+    documents_dict = {}
+
+    for doc in doc_res:
+        lines = doc.page_content.split("\n")
+
+        # 테이블명 및 설명 추출
+        table_name, table_desc = lines[0].split(": ", 1)
+
+        # 컬럼 정보 추출
+        columns = {}
+        if len(lines) > 2 and lines[1].strip() == "Columns:":
+            for line in lines[2:]:
+                if ": " in line:
+                    col_name, col_desc = line.split(": ", 1)
+                    columns[col_name.strip()] = col_desc.strip()
+
+        # 딕셔너리 저장
+        documents_dict[table_name] = {
+            "table_description": table_desc.strip(),
+            **columns,  # 컬럼 정보 추가
+        }
+    state["searched_tables"] = documents_dict
+
+    return state
 
 
-builder = MessageGraph()
+# 노드 함수: QUERY_MAKER 노드
+def query_maker_node(state: QueryMakerState):
+    res = query_maker_chain.invoke(
+        input={
+            "user_input": [state["messages"][0].content],
+            "refined_input": [state["refined_input"]],
+            "searched_tables": [json.dumps(state["searched_tables"])],
+            "user_database_env": [state["user_database_env"]],
+        }
+    )
+    state["generated_query"] = res
+    state["messages"].append(res)
+    return state
 
-builder.set_entry_point(TOOL_CHOICE)
 
-builder.add_node(TOOL_CHOICE, tool_choice_node)
-builder.add_node(TOOL, tool_node)
-builder.add_node(TABLE_FILTER, table_filter_node)
+# StateGraph 생성 및 구성
+builder = StateGraph(QueryMakerState)
+builder.set_entry_point(QUERY_REFINER)
+
+# 노드 추가
+builder.add_node(QUERY_REFINER, query_refiner_node)
+builder.add_node(GET_TABLE_INFO, get_table_info_node)
 builder.add_node(QUERY_MAKER, query_maker_node)
 
-builder.add_edge(TOOL_CHOICE, TOOL)
-builder.add_edge(TOOL, TABLE_FILTER)
+# 기본 엣지 설정
+builder.add_edge(QUERY_REFINER, GET_TABLE_INFO)
+builder.add_edge(GET_TABLE_INFO, QUERY_MAKER)
 
-builder.add_conditional_edges(
-    source=TABLE_FILTER,
-    path=should_end,
-    path_map={True: QUERY_MAKER, False: TOOL_CHOICE},
-)
-
+# QUERY_MAKER 노드 후 종료
 builder.add_edge(QUERY_MAKER, END)

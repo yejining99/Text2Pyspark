@@ -1,7 +1,7 @@
 import os
 from typing import List, Dict
 
-from langchain.tools import tool
+from langchain.schema import Document
 
 from data_utils.datahub_source import DatahubMetadataFetcher
 
@@ -15,17 +15,16 @@ def set_gms_server(gms_server: str):
         raise ValueError(f"GMS 서버 설정 실패: {str(e)}")
 
 
-def get_fetcher():
+def _get_fetcher():
     gms_server = os.getenv("DATAHUB_SERVER")
     if not gms_server:
         raise ValueError("GMS 서버가 설정되지 않았습니다.")
     return DatahubMetadataFetcher(gms_server=gms_server)
 
 
-@tool
-def get_table_info() -> Dict[str, str]:
+def _get_table_info() -> Dict[str, str]:
     """전체 테이블 이름과 설명을 가져오는 함수"""
-    fetcher = get_fetcher()
+    fetcher = _get_fetcher()
     urns = fetcher.get_urns()
     table_info = {}
     for urn in urns:
@@ -36,10 +35,9 @@ def get_table_info() -> Dict[str, str]:
     return table_info
 
 
-@tool
-def get_column_info(table_name: str) -> List[Dict[str, str]]:
+def _get_column_info(table_name: str) -> List[Dict[str, str]]:
     """table_name에 해당하는 컬럼 이름과 설명을 가져오는 함수"""
-    fetcher = get_fetcher()
+    fetcher = _get_fetcher()
     urns = fetcher.get_urns()
     for urn in urns:
         if fetcher.get_table_name(urn) == table_name:
@@ -47,9 +45,24 @@ def get_column_info(table_name: str) -> List[Dict[str, str]]:
     return []
 
 
-@tool
-def optimize_query(query: str) -> str:
-    """생성된 쿼리 최적화"""
-    # 쿼리 최적화 로직 추가 (예: 인덱스 사용, 조건 추가 등)
-    optimized_query = query  # 예시로 동일한 쿼리 반환
-    return optimized_query
+def get_info_from_db() -> List[Document]:
+    """
+    전체 테이블 이름과 설명, 컬럼 이름과 설명을 가져오는 함수
+    """
+
+    table_info_str_list = []
+    table_info = _get_table_info()
+    for table_name, table_description in table_info.items():
+        column_info = _get_column_info(table_name)
+        column_info_str = "\n".join(
+            [
+                f"{col['column_name']}: {col['column_description']}"
+                for col in column_info
+            ]
+        )
+        table_info_str_list.append(
+            f"{table_name}: {table_description}\nColumns:\n {column_info_str}"
+        )
+
+    # table_info_str_list를 Document 객체 리스트로 변환
+    return [Document(page_content=info) for info in table_info_str_list]
