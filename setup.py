@@ -6,7 +6,7 @@ with open("README.md", "r", encoding="utf-8") as fh:
 
 setup(
     name="lang2sql",  # 패키지 이름
-    version="0.1.6",  # 버전
+    version="0.1.7",  # 버전
     author="ehddnr301",
     author_email="dy95032@gmail.com",
     url="https://github.com/ehddnr301/lang2sql",
