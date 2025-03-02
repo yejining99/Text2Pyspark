@@ -9,7 +9,7 @@ setup(
     version="0.1.8",  # 버전
     author="ehddnr301",
     author_email="dy95032@gmail.com",
-    url="https://github.com/ehddnr301/lang2sql",
+    url="https://github.com/CausalInferenceLab/Lang2SQL",
     description="Lang2SQL - Query Generator for Data Warehouse",
     long_description=long_description,
     long_description_content_type="text/markdown",
