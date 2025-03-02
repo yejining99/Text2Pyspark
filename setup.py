@@ -1,12 +1,12 @@
 # setup.py
 from setuptools import setup, find_packages
 
-with open("README.md", "r", encoding="utf-8") as fh:
+with open("docs/README.md", "r", encoding="utf-8") as fh:
     long_description = fh.read()
 
 setup(
     name="lang2sql",  # 패키지 이름
-    version="0.1.7",  # 버전
+    version="0.1.8",  # 버전
     author="ehddnr301",
     author_email="dy95032@gmail.com",
     url="https://github.com/ehddnr301/lang2sql",
