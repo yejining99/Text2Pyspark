@@ -1,7 +1,5 @@
+import os
 import json
-from dotenv import load_dotenv
-
-load_dotenv()
 
 from typing_extensions import TypedDict, Annotated
 from langgraph.graph import END, StateGraph
@@ -53,14 +51,14 @@ def get_table_info_node(state: QueryMakerState):
     embeddings = OpenAIEmbeddings(model="text-embedding-3-small")
     try:
         db = FAISS.load_local(
-            "/home/pseudo.dwlee/autosql/table_info_db",
+            os.getcwd() + "/table_info_db",
             embeddings,
             allow_dangerous_deserialization=True,
         )
     except:
         documents = get_info_from_db()
         db = FAISS.from_documents(documents, embeddings)
-        db.save_local("/home/pseudo.dwlee/autosql/table_info_db")
+        db.save_local(os.getcwd() + "/table_info_db")
         print("table_info_db not found")
     doc_res = db.similarity_search(state["messages"][-1].content)
     documents_dict = {}

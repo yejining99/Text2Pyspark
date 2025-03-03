@@ -6,7 +6,7 @@ with open("docs/README.md", "r", encoding="utf-8") as fh:
 
 setup(
     name="lang2sql",  # 패키지 이름
-    version="0.1.8",  # 버전
+    version="0.1.9",  # 버전
     author="ehddnr301",
     author_email="dy95032@gmail.com",
     url="https://github.com/CausalInferenceLab/Lang2SQL",
@@ -22,6 +22,8 @@ setup(
         "openai==1.59.8",
         "langchain-openai==0.3.0",
         "streamlit==1.41.1",
+        "python-dotenv==1.0.1",
+        "faiss-cpu==1.10.0",
     ],
     entry_points={
         "console_scripts": [
