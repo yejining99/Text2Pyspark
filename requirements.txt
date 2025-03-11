@@ -5,6 +5,9 @@ langchain-community==0.3.14
 openai==1.59.8
 langchain-openai==0.3.0
 streamlit==1.41.1
+python-dotenv==1.0.1
+faiss-cpu==1.10.0
+pre_commit==4.1.0
 setuptools
 wheel
 twine
