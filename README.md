@@ -54,6 +54,7 @@
 |---------------|------|-----------------------------------------------------------------------|----------------------------------------|
 | **Project Manager** | 이동욱 | ![Python](https://img.shields.io/badge/Python-Expert-3776AB)  | LLM 오픈소스 인과추론             |
 | **Data Scientist** | 안재일 | ![Python](https://img.shields.io/badge/Python-Intermediate-FF6C37)  | LLM 데이터분석 RAG             |
+| **Data Analytics Engineer** | 박경태 | ![Python](https://img.shields.io/badge/Python-Expert-3776AB)  | LLM 기반 엔지니어링             |
 
 
 ## 🚀 프로젝트 로드맵 (Project Roadmap)
