@@ -1,6 +1,8 @@
+.DS_Store
 .env
 __pycache__/
 build/
 lang2sql.egg-info/
 dist/
 .pypirc
+.cursorignore
