@@ -4,3 +4,5 @@ build/
 lang2sql.egg-info/
 dist/
 .pypirc
+.venv/
+test_lhm/
