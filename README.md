@@ -54,6 +54,7 @@
 |---------------|------|-----------------------------------------------------------------------|----------------------------------------|
 | **Project Manager** | 이동욱 | ![Python](https://img.shields.io/badge/Python-Expert-3776AB)  | LLM 오픈소스 인과추론             |
 | **AI Engineer** | 최세영 | ![Python](https://img.shields.io/badge/Python-Expert-3776AB)  | LLM RAG 오픈소스 멀티 에이전트            |
+| **AI Engineer** | 문찬국 | ![Python](https://img.shields.io/badge/Python-Expert-3776AB) | LLM AgenticRAG 오픈소스 
 
 
 ## 🚀 프로젝트 로드맵 (Project Roadmap)
