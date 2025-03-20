@@ -69,7 +69,7 @@ class DatahubMetadataFetcher:
                 )
         return columns
 
-    def get_table_linage(
+    def get_table_lineage(
         self,
         urn,
         counts=100,
