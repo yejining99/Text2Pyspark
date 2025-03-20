@@ -67,3 +67,71 @@ class DatahubMetadataFetcher:
                     }
                 )
         return columns
+
+    def get_linage(
+        self,
+        gms_server_url,
+        urn,
+        counts=100,
+        direction="DOWNSTREAM",
+        degree_values=None,
+    ):
+        # URN에 대한 DOWNSTREAM/UPSTREAM lineage entity counts 만큼 가져오는 함수
+        # degree_values에 따라 lineage depth가 결정
+        """
+        Fetches downstream/upstream lineage entities for a given dataset URN using DataHub's GraphQL API.
+
+        Args:
+            gms_server_url (str): DataHub GMS endpoint.
+            urn (str): Dataset URN to fetch lineage for.
+            count (int): Maximum number of entities to fetch (default=100).
+            direction (str): DOWNSTREAM or UPSTREAM.
+            degree_values (List[str]): Degree filter values like ["1", "2", "3+"]. Defaults to ["1", "2"].
+
+        Returns:
+            List[Tuple[str, dict]]: A list containing the dataset URN and its lineage result.
+        """
+
+        if degree_values is None:
+            degree_values = ["1", "2"]
+
+        from datahub.ingestion.graph.client import DatahubClientConfig, DataHubGraph
+
+        datahub_graph = DataHubGraph(DatahubClientConfig(server=gms_server_url))
+
+        query = """
+            query scrollAcrossLineage($input: ScrollAcrossLineageInput!) {
+            scrollAcrossLineage(input: $input) {
+                searchResults {
+                    degree
+                    entity {
+                        urn
+                        type
+                    }
+                }
+            }
+        }
+            """
+        variables = {
+            "input": {
+                "query": "*",
+                "urn": urn,
+                "count": counts,
+                "direction": direction,
+                "orFilters": [
+                    {
+                        "and": [
+                            {
+                                "condition": "EQUAL",
+                                "negated": "false",
+                                "field": "degree",
+                                "values": degree_values,
+                            }
+                        ]
+                    }
+                ],
+            }
+        }
+
+        result = datahub_graph.execute_graphql(query=query, variables=variables)
+        return [(urn, result)]
