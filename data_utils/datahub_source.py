@@ -15,6 +15,7 @@ class DatahubMetadataFetcher:
             gms_server=gms_server, extra_headers=extra_headers
         )
         self.datahub_graph = self.emitter.to_graph()
+        self.gms_server = gms_server
 
     def _is_valid_gms_server(self, gms_server):
         # GMS 서버 주소의 유효성을 검사하는 로직 추가
@@ -68,21 +69,19 @@ class DatahubMetadataFetcher:
                 )
         return columns
 
-    def get_linage(
+    def get_table_linage(
         self,
-        gms_server_url,
         urn,
         counts=100,
         direction="DOWNSTREAM",
         degree_values=None,
     ):
-        # URN에 대한 DOWNSTREAM/UPSTREAM lineage entity counts 만큼 가져오는 함수
+        # URN에 대한 DOWNSTREAM/UPSTREAM lineage entity를 counts 만큼 가져오는 함수
         # degree_values에 따라 lineage depth가 결정
         """
         Fetches downstream/upstream lineage entities for a given dataset URN using DataHub's GraphQL API.
 
         Args:
-            gms_server_url (str): DataHub GMS endpoint.
             urn (str): Dataset URN to fetch lineage for.
             count (int): Maximum number of entities to fetch (default=100).
             direction (str): DOWNSTREAM or UPSTREAM.
@@ -97,7 +96,7 @@ class DatahubMetadataFetcher:
 
         from datahub.ingestion.graph.client import DatahubClientConfig, DataHubGraph
 
-        datahub_graph = DataHubGraph(DatahubClientConfig(server=gms_server_url))
+        graph = DataHubGraph(DatahubClientConfig(server=self.gms_server))
 
         query = """
             query scrollAcrossLineage($input: ScrollAcrossLineageInput!) {
@@ -111,7 +110,7 @@ class DatahubMetadataFetcher:
                 }
             }
         }
-            """
+        """
         variables = {
             "input": {
                 "query": "*",
@@ -133,5 +132,63 @@ class DatahubMetadataFetcher:
             }
         }
 
-        result = datahub_graph.execute_graphql(query=query, variables=variables)
+        result = graph.execute_graphql(query=query, variables=variables)
         return [(urn, result)]
+
+    def get_column_lineage(self, urn):
+        # URN에 대한 UPSTREAM lineage의 column source를 가져오는 함수
+        """
+        Fetches fine-grained column-level lineage grouped by upstream datasets.
+
+        Args:
+            urn (str): Dataset URN to fetch lineage for.
+
+        Returns:
+            dict: {
+                'downstream_dataset': str,
+                'lineage_by_upstream_dataset': List[{
+                    'upstream_dataset': str,
+                    'columns': List[{'upstream_column': str, 'downstream_column': str}]
+                }]
+            }
+        """
+
+        from datahub.ingestion.graph.client import DatahubClientConfig, DataHubGraph
+        from datahub.metadata.schema_classes import UpstreamLineageClass
+        from collections import defaultdict
+
+        # DataHub 연결 및 lineage 가져오기
+        graph = DataHubGraph(DatahubClientConfig(server=self.gms_server))
+        result = graph.get_aspect(entity_urn=urn, aspect_type=UpstreamLineageClass)
+
+        # downstream dataset (URN 테이블명) 파싱
+        down_dataset = urn.split(",")[1]
+        table_name = down_dataset.split(".")[1]
+
+        # upstream_dataset별로 column lineage
+        upstream_map = defaultdict(list)
+
+        for fg in result.fineGrainedLineages:
+            for down in fg.downstreams:
+                down_column = down.split(",")[-1].replace(")", "")
+                for up in fg.upstreams:
+                    up_dataset = up.split(",")[1]
+                    up_dataset = up_dataset.split(".")[1]
+                    up_column = up.split(",")[-1].replace(")", "")
+
+                    upstream_map[up_dataset].append(
+                        {"upstream_column": up_column, "downstream_column": down_column}
+                    )
+
+        # 최종 결과 구조 생성
+        parsed_lineage = {
+            "downstream_dataset": table_name,
+            "lineage_by_upstream_dataset": [],
+        }
+
+        for up_dataset, column_mappings in upstream_map.items():
+            parsed_lineage["lineage_by_upstream_dataset"].append(
+                {"upstream_dataset": up_dataset, "columns": column_mappings}
+            )
+
+        return parsed_lineage
