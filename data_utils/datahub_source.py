@@ -88,7 +88,7 @@ class DatahubMetadataFetcher:
             degree_values (List[str]): Degree filter values like ["1", "2", "3+"]. Defaults to ["1", "2"].
 
         Returns:
-            List[Tuple[str, dict]]: A list containing the dataset URN and its lineage result.
+            List[str, dict]: A list containing the dataset URN and its lineage result.
         """
 
         if degree_values is None:
@@ -133,7 +133,7 @@ class DatahubMetadataFetcher:
         }
 
         result = graph.execute_graphql(query=query, variables=variables)
-        return [(urn, result)]
+        return urn, result
 
     def get_column_lineage(self, urn):
         # URN에 대한 UPSTREAM lineage의 column source를 가져오는 함수
