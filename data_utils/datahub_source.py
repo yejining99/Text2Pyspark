@@ -162,11 +162,20 @@ class DatahubMetadataFetcher:
         result = graph.get_aspect(entity_urn=urn, aspect_type=UpstreamLineageClass)
 
         # downstream dataset (URN 테이블명) 파싱
-        down_dataset = urn.split(",")[1]
-        table_name = down_dataset.split(".")[1]
+        try:
+            down_dataset = urn.split(",")[1]
+            table_name = down_dataset.split(".")[1]
+
+        except IndexError:
+            # URN이 유효하지 않는 경우
+            print(f"[ERROR] Invalid URN format: {urn}")
+            return {}
 
         # upstream_dataset별로 column lineage
         upstream_map = defaultdict(list)
+
+        if not result:
+            return {"downstream_dataset": table_name, "lineage_by_upstream_dataset": []}
 
         for fg in result.fineGrainedLineages or []:
             confidence_score = (
