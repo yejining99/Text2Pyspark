@@ -225,3 +225,55 @@ class DatahubMetadataFetcher:
             )
 
         return table_degrees
+
+    def build_table_metadata(self, urn, max_degree=2, sort_by_degree=True):
+        # 테이블 단위로 테이블 이름, 설명, 컬럼, 테이블 별 리니지(downstream/upstream), 컬럼 별 리니지(upstream)이 포함된 메타데이터 생성 함수
+        """
+        Builds table metadata including description, columns, and lineage info.
+
+        Args:
+            urn (str): Dataset URN
+            max_degree (int): Max lineage depth to include (filtering)
+            sort_by_degree (bool): Whether to sort downstream/upstream tables by degree
+
+        Returns:
+            dict: Table metadata
+        """
+        metadata = {
+            "table_name": self.get_table_name(urn),
+            "description": self.get_table_description(urn),
+            "columns": self.get_column_names_and_descriptions(urn),
+            "lineage": {},
+        }
+
+        def process_lineage(direction):
+            # direction : DOWNSTREAM/UPSTREAM 별로 degree가 최소인 lineage를 가져오는 함수
+
+            # 테이블 lineage 가져오기
+            lineage_result = self.get_table_lineage(urn, direction=direction)
+            table_degrees = self.min_degree_lineage(lineage_result)
+
+            # degree 필터링
+            filtered_lineage = [
+                {"table": table, "degree": degree}
+                for table, degree in table_degrees.items()
+                if degree <= max_degree
+            ]
+
+            # degree 기준 정렬
+            if sort_by_degree:
+                filtered_lineage.sort(key=lambda x: x["degree"])
+
+            return filtered_lineage
+
+        # DOWNSTREAM / UPSTREAM 링크 추가
+        metadata["lineage"]["downstream"] = process_lineage("DOWNSTREAM")
+        metadata["lineage"]["upstream"] = process_lineage("UPSTREAM")
+
+        # 컬럼 단위 lineage 추가
+        column_lineage = self.get_column_lineage(urn)
+        metadata["lineage"]["upstream_columns"] = column_lineage.get(
+            "lineage_by_upstream_dataset", []
+        )
+
+        return metadata
