@@ -199,3 +199,29 @@ class DatahubMetadataFetcher:
             )
 
         return parsed_lineage
+
+    def min_degree_lineage(self, lineage_result):
+        # lineage 중 최소 degree만 가져오는 함수
+        """
+        Returns the minimum degree from the lineage result (fetched by get_table_lineage().)
+
+        Args:
+            lineage_result : (List[str, dict]): Result from get_table_lineage().
+
+        Returns:
+            dict : {table_name : minimum_degree}
+        """
+
+        table_degrees = {}
+
+        urn, lineage_data = lineage_result
+
+        for item in lineage_data["scrollAcrossLineage"]["searchResults"]:
+            table = item["entity"]["urn"].split(",")[1]
+            table_name = table.split(".")[1]
+            degree = item["degree"]
+            table_degrees[table_name] = min(
+                degree, table_degrees.get(table_name, float("inf"))
+            )
+
+        return table_degrees
