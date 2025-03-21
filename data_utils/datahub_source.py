@@ -2,6 +2,9 @@ import datahub.emitter.mce_builder as builder
 from datahub.emitter.mcp import MetadataChangeProposalWrapper
 from datahub.metadata.schema_classes import DatasetPropertiesClass, SchemaMetadataClass
 from datahub.emitter.rest_emitter import DatahubRestEmitter
+from datahub.ingestion.graph.client import DatahubClientConfig, DataHubGraph
+from datahub.metadata.schema_classes import UpstreamLineageClass
+from collections import defaultdict
 import requests
 
 
@@ -94,8 +97,6 @@ class DatahubMetadataFetcher:
         if degree_values is None:
             degree_values = ["1", "2"]
 
-        from datahub.ingestion.graph.client import DatahubClientConfig, DataHubGraph
-
         graph = DataHubGraph(DatahubClientConfig(server=self.gms_server))
 
         query = """
@@ -152,10 +153,6 @@ class DatahubMetadataFetcher:
                 }]
             }
         """
-
-        from datahub.ingestion.graph.client import DatahubClientConfig, DataHubGraph
-        from datahub.metadata.schema_classes import UpstreamLineageClass
-        from collections import defaultdict
 
         # DataHub 연결 및 lineage 가져오기
         graph = DataHubGraph(DatahubClientConfig(server=self.gms_server))
