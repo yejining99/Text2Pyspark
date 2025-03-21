@@ -168,7 +168,10 @@ class DatahubMetadataFetcher:
         # upstream_dataset별로 column lineage
         upstream_map = defaultdict(list)
 
-        for fg in result.fineGrainedLineages:
+        for fg in result.fineGrainedLineages or []:
+            confidence_score = (
+                fg.confidenceScore if fg.confidenceScore is not None else 1.0
+            )
             for down in fg.downstreams:
                 down_column = down.split(",")[-1].replace(")", "")
                 for up in fg.upstreams:
@@ -177,7 +180,11 @@ class DatahubMetadataFetcher:
                     up_column = up.split(",")[-1].replace(")", "")
 
                     upstream_map[up_dataset].append(
-                        {"upstream_column": up_column, "downstream_column": down_column}
+                        {
+                            "upstream_column": up_column,
+                            "downstream_column": down_column,
+                            "confidence": confidence_score,
+                        }
                     )
 
         # 최종 결과 구조 생성
