@@ -54,6 +54,7 @@
 |---------------|------|-----------------------------------------------------------------------|----------------------------------------|
 | **Project Manager** | 이동욱 | ![Python](https://img.shields.io/badge/Python-Expert-3776AB)  | LLM 오픈소스 인과추론             |
 | **Data Scientist** | 안재일 | ![Python](https://img.shields.io/badge/Python-Intermediate-FF6C37)  | LLM 데이터분석 RAG             |
+| **Full-Stack Developer | 황윤진 | ![NextJs](https://img.shields.io/badge/NextJs-Expert-3776AB) ![React](https://img.shields.io/badge/React-Expert-3776AB) | LLM 오케스트레이션
 
 
 ## 🚀 프로젝트 로드맵 (Project Roadmap)
