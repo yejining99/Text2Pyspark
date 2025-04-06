@@ -4,6 +4,7 @@ from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder, load
 from .llm_factory import get_llm
 
 from dotenv import load_dotenv
+import yaml
 
 env_path = os.path.join(os.getcwd(), ".env")
 
@@ -74,6 +75,7 @@ def create_query_refiner_chain(llm):
 
 # QueryMakerChain
 def create_query_maker_chain(llm):
+    # SystemPrompt만 yaml 파일로 불러와서 사용
     prompt = load_prompt("../prompt/system_prompt.yaml", encoding="utf-8")
     query_maker_prompt = ChatPromptTemplate.from_messages(
         [
@@ -98,6 +100,21 @@ def create_query_maker_chain(llm):
     )
     return query_maker_prompt | llm
 
+
+def create_query_maker_chain_from_chat_promt(llm):
+    """
+    ChatPromptTemplate 형식으로 저장된 yaml 파일을 불러와서 사용 (코드가 간소화되지만, 별도의 후처리 작업이 필요) 
+    """
+    with  open("../prompt/create_query_maker_chain.yaml", "r", encoding="utf-8") as f:
+        chat_prompt_dict = yaml.safe_load(f)
+        
+    messages = chat_prompt_dict['messages']
+    template = messages[0]["prompt"].pop("template") if messages else None
+    template = [tuple(item) for item in template]
+    query_maker_prompt = ChatPromptTemplate.from_messages(template)
+    
+    return query_maker_prompt | llm
+        
 
 query_refiner_chain = create_query_refiner_chain(llm)
 query_maker_chain = create_query_maker_chain(llm)
