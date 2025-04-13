@@ -258,12 +258,13 @@ class DatahubMetadataFetcher:
             # 테이블 lineage 가져오기
             lineage_result = self.get_table_lineage(urn, direction=direction)
             table_degrees = self.min_degree_lineage(lineage_result)
+            current_table_name = metadata["table_name"]
 
             # degree 필터링
             filtered_lineage = [
                 {"table": table, "degree": degree}
                 for table, degree in table_degrees.items()
-                if degree <= max_degree
+                if degree <= max_degree and table != current_table_name
             ]
 
             # degree 기준 정렬
