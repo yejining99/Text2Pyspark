@@ -74,11 +74,12 @@ def get_metadata_from_db() -> List[Dict]:
     """
 
     fetcher = _get_fetcher()
-    urns = fetcher.get_urns()
+    urns = list(fetcher.get_urns())
 
     metadata = []
-    for urn in urns:
-        print(f"Processing URN: {urn}")
+    total = len(urns)
+    for idx, urn in enumerate(urns, 1):
+        print(f"[{idx}/{total}] Processing URN: {urn}")
         table_metadata = fetcher.build_table_metadata(urn)
         metadata.append(table_metadata)
 
