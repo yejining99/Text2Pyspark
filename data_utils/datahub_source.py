@@ -64,10 +64,18 @@ class DatahubMetadataFetcher:
         columns = []
         if schema_metadata:
             for field in schema_metadata.fields:
+
+                # nativeDataType이 없거나 빈 문자열인 경우 None 처리
+                native_type = getattr(field, "nativeDataType", None)
+                column_type = (
+                    native_type if native_type and native_type.strip() else None
+                )
+
                 columns.append(
                     {
                         "column_name": field.fieldPath,
                         "column_description": field.description,
+                        "column_type": column_type,
                     }
                 )
         return columns
