@@ -44,6 +44,6 @@ def main(output_path):
 
 if __name__ == "__main__":
     parser = ArgumentParser()
-    parser.add_argument("--output_path", type=str, default="data/persona/personas.json")
+    parser.add_argument("--output_path", type=str, default="data/personas.json")
     args = parser.parse_args()
     main(args.output_path)
