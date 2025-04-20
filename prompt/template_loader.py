@@ -14,17 +14,6 @@ def get_prompt_template(prompt_name: str) -> str:
         raise FileNotFoundError(f"경고: '{prompt_name}.md' 파일을 찾을 수 없습니다.")
     return template
 
-
-def apply_prompt_template(prompt_name: str, state: AgentState) -> list:
-    system_prompt = PromptTemplate(
-        input_variables=["CURRENT_TIME"],
-        template=get_prompt_template(prompt_name),
-    ).format(CURRENT_TIME=datetime.now().strftime("%a %b %d %Y %H:%M:%S %z"), **state)
-    
-    # system prompt template 설정
-    return [{"role": "system", "content": system_prompt}] + state["messages"]
-
-
 if __name__ == "__main__":
     print(get_prompt_template("system_prompt"))
     # print(apply_prompt_template("prompt_md_sample", {"messages": []}))
