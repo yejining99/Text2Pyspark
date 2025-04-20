@@ -9,7 +9,6 @@ from clickhouse_driver import Client
 from connect_db import ConnectDB
 from dotenv import load_dotenv
 
-
 # Clickhouse 연결
 db = ConnectDB()
 db.connect_to_clickhouse()
