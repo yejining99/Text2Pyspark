@@ -32,6 +32,7 @@ def _get_table_info() -> Dict[str, str]:
         table_description = fetcher.get_table_description(urn)
         if table_name and table_description:
             table_info[table_name] = table_description
+            print(f'table_name {urn}')
     return table_info
 
 

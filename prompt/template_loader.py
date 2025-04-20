@@ -7,13 +7,11 @@ from langgraph.prebuilt.chat_agent_executor import AgentState
 
 
 def get_prompt_template(prompt_name: str) -> str:
-    template = open(os.path.join(os.path.dirname(__file__), f"{prompt_name}.md")).read()
-    
-    # Escape curly braces using backslash (중괄호를 문자로 처리)
-    template = template.replace("{", "{{").replace("}", "}}")
-    
-    # Replace `<<VAR>>` with `{VAR}`
-    template = re.sub(r"<<([^>>]+)>>", r"{\1}", template)
+    try:
+        with open(os.path.join(os.path.dirname(__file__), f"{prompt_name}.md"), "r", encoding="utf-8") as f:
+            template = f.read()
+    except FileNotFoundError:
+        raise FileNotFoundError(f"경고: '{prompt_name}.md' 파일을 찾을 수 없습니다.")
     return template
 
 
@@ -28,5 +26,5 @@ def apply_prompt_template(prompt_name: str, state: AgentState) -> list:
 
 
 if __name__ == "__main__":
-    print(get_prompt_template("prompt_md_sample"))
+    print(get_prompt_template("system_prompt"))
     # print(apply_prompt_template("prompt_md_sample", {"messages": []}))
