@@ -513,7 +513,6 @@ class DatahubMetadataFetcher:
             json={"query": LIST_QUERIES_QUERY, "variables": variables},
             headers=headers,
         )
-        print(response.json())
 
         # 결과 반환
         if response.status_code == 200:
