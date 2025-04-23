@@ -5,9 +5,11 @@ from langchain.chains.sql_database.prompt import SQL_PROMPTS
 import os
 from typing import Union
 import pandas as pd
+
 from clickhouse_driver import Client
-from connect_db import ConnectDB
+from llm_utils.connect_db import ConnectDB
 from dotenv import load_dotenv
+
 
 # Clickhouse 연결
 db = ConnectDB()
