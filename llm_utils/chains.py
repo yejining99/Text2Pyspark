@@ -13,13 +13,7 @@ if os.path.exists(env_path):
 else:
     print(f"⚠️  환경변수 파일(.env)이 {os.getcwd()}에 없습니다!")
 
-
-llm = get_llm(
-    model_type="openai",
-    model_name="gpt-4o-mini",
-    openai_api_key=os.getenv("OPENAI_API_KEY"),
-)
-
+llm = get_llm()
 
 def create_query_refiner_chain(llm):
     prompt = get_prompt_template('query_refiner_prompt')
