@@ -35,7 +35,6 @@ class QueryMakerState(TypedDict):
 
 # 노드 함수: QUERY_REFINER 노드
 def query_refiner_node(state: QueryMakerState):
-    print('query_refiner_node 진입 [md]')
     res = query_refiner_chain.invoke(
         input={
             "user_input": [state["messages"][0].content],
@@ -61,7 +60,6 @@ def get_table_info_node(state: QueryMakerState):
         )
     except:
         documents = get_info_from_db()
-        print("db_embedding 진입")
         db = FAISS.from_documents(documents, embeddings)
         db.save_local(os.getcwd() + "/table_info_db")
     doc_res = db.similarity_search(state["messages"][-1].content)

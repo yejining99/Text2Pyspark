@@ -1,5 +1,9 @@
 import os
-from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder, SystemMessagePromptTemplate
+from langchain_core.prompts import (
+    ChatPromptTemplate,
+    MessagesPlaceholder,
+    SystemMessagePromptTemplate,
+)
 
 from .llm_factory import get_llm
 
@@ -15,8 +19,9 @@ else:
 
 llm = get_llm()
 
+
 def create_query_refiner_chain(llm):
-    prompt = get_prompt_template('query_refiner_prompt')
+    prompt = get_prompt_template("query_refiner_prompt")
     tool_choice_prompt = ChatPromptTemplate.from_messages(
         [
             SystemMessagePromptTemplate.from_template(prompt),
@@ -38,7 +43,7 @@ def create_query_refiner_chain(llm):
 # QueryMakerChain
 def create_query_maker_chain(llm):
     # SystemPrompt만 yaml 파일로 불러와서 사용
-    prompt = get_prompt_template('query_maker_prompt')
+    prompt = get_prompt_template("query_maker_prompt")
     query_maker_prompt = ChatPromptTemplate.from_messages(
         [
             SystemMessagePromptTemplate.from_template(prompt),
