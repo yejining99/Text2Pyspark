@@ -1,5 +1,3 @@
-import datahub.emitter.mce_builder as builder
-from datahub.emitter.mcp import MetadataChangeProposalWrapper
 from datahub.metadata.schema_classes import DatasetPropertiesClass, SchemaMetadataClass
 from datahub.emitter.rest_emitter import DatahubRestEmitter
 from datahub.ingestion.graph.client import DatahubClientConfig, DataHubGraph

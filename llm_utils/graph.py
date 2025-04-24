@@ -134,10 +134,10 @@ builder.set_entry_point(QUERY_REFINER)
 # 노드 추가
 builder.add_node(QUERY_REFINER, query_refiner_node)
 builder.add_node(GET_TABLE_INFO, get_table_info_node)
-# builder.add_node(QUERY_MAKER, query_maker_node)  #  query_maker_node_with_db_guide
-builder.add_node(
-    QUERY_MAKER, query_maker_node_with_db_guide
-)  #  query_maker_node_with_db_guide
+builder.add_node(QUERY_MAKER, query_maker_node)  #  query_maker_node_with_db_guide
+# builder.add_node(
+#     QUERY_MAKER, query_maker_node_with_db_guide
+# )  #  query_maker_node_with_db_guide
 
 # 기본 엣지 설정
 builder.add_edge(QUERY_REFINER, GET_TABLE_INFO)
