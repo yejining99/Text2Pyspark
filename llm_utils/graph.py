@@ -62,7 +62,6 @@ def get_table_info_node(state: QueryMakerState):
         documents = get_info_from_db()
         db = FAISS.from_documents(documents, embeddings)
         db.save_local(os.getcwd() + "/table_info_db")
-        print("table_info_db not found")
     doc_res = db.similarity_search(state["messages"][-1].content)
     documents_dict = {}
 
@@ -112,11 +111,7 @@ class SQLResult(BaseModel):
 
 def query_maker_node_with_db_guide(state: QueryMakerState):
     sql_prompt = SQL_PROMPTS[state["user_database_env"]]
-    llm = get_llm(
-        model_type="openai",
-        model_name="gpt-4o-mini",
-        openai_api_key=os.getenv("OPENAI_API_KEY"),
-    )
+    llm = get_llm()
     chain = sql_prompt | llm.with_structured_output(SQLResult)
     res = chain.invoke(
         input={

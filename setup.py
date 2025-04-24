@@ -24,6 +24,10 @@ setup(
         "streamlit==1.41.1",
         "python-dotenv==1.0.1",
         "faiss-cpu==1.10.0",
+        "langchain-aws>=0.2.21,<0.3.0",
+        "langchain-google-genai>=2.1.3,<3.0.0",
+        "langchain-ollama>=0.3.2,<0.4.0",
+        "langchain-huggingface>=0.1.2,<0.2.0",
     ],
     entry_points={
         "console_scripts": [
