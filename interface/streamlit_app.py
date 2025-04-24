@@ -1,6 +1,5 @@
 import streamlit as st
 
-
 pg = st.navigation(
     [
         st.Page("lang2sql.py", title="Lang2SQL"),
