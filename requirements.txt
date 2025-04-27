@@ -11,3 +11,4 @@ pre_commit==4.1.0
 setuptools
 wheel
 twine
+transformers==4.51.2
