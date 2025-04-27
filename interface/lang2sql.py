@@ -57,8 +57,12 @@ def execute_query(
     Returns:
         dict: 변환된 SQL 쿼리 및 관련 메타데이터를 포함하는 결과 딕셔너리.
     """
+    # 세션 상태에서 그래프 가져오기
+    graph = st.session_state.get("graph")
+    if graph is None:
+        graph = builder.compile()
+        st.session_state["graph"] = graph
 
-    graph = builder.compile()
     res = graph.invoke(
         input={
             "messages": [HumanMessage(content=query)],
@@ -112,6 +116,16 @@ db = ConnectDB()
 db.connect_to_clickhouse()
 
 st.title("Lang2SQL")
+
+# 세션 상태 초기화
+if "graph" not in st.session_state:
+    st.session_state["graph"] = builder.compile()
+    st.info("Lang2SQL이 성공적으로 시작되었습니다.")
+
+# 새로고침 버튼 추가
+if st.sidebar.button("Lang2SQL 새로고침"):
+    st.session_state["graph"] = builder.compile()
+    st.sidebar.success("Lang2SQL이 성공적으로 새로고침되었습니다.")
 
 user_query = st.text_area(
     "쿼리를 입력하세요:",
