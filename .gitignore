@@ -8,3 +8,4 @@ dist/
 .venv/
 test_lhm/
 .cursorignore
+.vscode
