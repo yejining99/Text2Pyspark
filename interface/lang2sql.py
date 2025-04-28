@@ -48,6 +48,7 @@ def execute_query(
     database_env: str,
     retriever_name: str = "기본",
     top_n: int = 5,
+    device: str = "cpu",
 ) -> dict:
     """
     Lang2SQL 그래프를 실행하여 자연어 쿼리를 SQL 쿼리로 변환하고 결과를 반환합니다.
@@ -70,6 +71,7 @@ def execute_query(
             "best_practice_query": "",
             "retriever_name": retriever_name,
             "top_n": top_n,
+            "device": device,
         }
     )
 
@@ -129,6 +131,12 @@ user_database_env = st.selectbox(
     index=0,
 )
 
+device = st.selectbox(
+    "모델 실행 장치를 선택하세요:",
+    options=["cpu", "cuda"],
+    index=0,
+)
+
 retriever_options = {
     "기본": "벡터 검색 (기본)",
     "Reranker": "Reranker 검색 (정확도 향상)",
@@ -160,5 +168,6 @@ if st.button("쿼리 실행"):
         database_env=user_database_env,
         retriever_name=user_retriever,
         top_n=user_top_n,
+        device=device,
     )
     display_result(res=result, database=db)

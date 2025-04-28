@@ -34,6 +34,7 @@ class QueryMakerState(TypedDict):
     generated_query: str
     retriever_name: str
     top_n: int
+    device: str
 
 
 # 노드 함수: QUERY_REFINER 노드
@@ -57,6 +58,7 @@ def get_table_info_node(state: QueryMakerState):
         query=state["messages"][0].content,
         retriever_name=state["retriever_name"],
         top_n=state["top_n"],
+        device=state["device"],
     )
     state["searched_tables"] = documents_dict
 
