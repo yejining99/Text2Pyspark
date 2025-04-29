@@ -27,6 +27,10 @@ def create_query_refiner_chain(llm):
             SystemMessagePromptTemplate.from_template(prompt),
             MessagesPlaceholder(variable_name="user_input"),
             SystemMessagePromptTemplate.from_template(
+                "다음은 사용자의 실제 사용 가능한 테이블 및 컬럼 정보입니다:"
+            ),
+            MessagesPlaceholder(variable_name="searched_tables"),
+            SystemMessagePromptTemplate.from_template(
                 """
                 위 사용자의 입력을 바탕으로
                 분석 관점에서 **충분히 답변 가능한 형태**로

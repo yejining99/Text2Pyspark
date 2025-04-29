@@ -46,6 +46,9 @@ def execute_query(
     *,
     query: str,
     database_env: str,
+    retriever_name: str = "기본",
+    top_n: int = 5,
+    device: str = "cpu",
 ) -> dict:
     """
     Lang2SQL 그래프를 실행하여 자연어 쿼리를 SQL 쿼리로 변환하고 결과를 반환합니다.
@@ -53,6 +56,8 @@ def execute_query(
     Args:
         query (str): 자연어로 작성된 사용자 쿼리.
         database_env (str): 사용할 데이터베이스 환경 설정 이름.
+        retriever_name (str): 사용할 검색기 이름.
+        top_n (int): 검색할 테이블 정보의 개수.
 
     Returns:
         dict: 변환된 SQL 쿼리 및 관련 메타데이터를 포함하는 결과 딕셔너리.
@@ -68,6 +73,9 @@ def execute_query(
             "messages": [HumanMessage(content=query)],
             "user_database_env": database_env,
             "best_practice_query": "",
+            "retriever_name": retriever_name,
+            "top_n": top_n,
+            "device": device,
         }
     )
 
@@ -137,6 +145,33 @@ user_database_env = st.selectbox(
     index=0,
 )
 
+device = st.selectbox(
+    "모델 실행 장치를 선택하세요:",
+    options=["cpu", "cuda"],
+    index=0,
+)
+
+retriever_options = {
+    "기본": "벡터 검색 (기본)",
+    "Reranker": "Reranker 검색 (정확도 향상)",
+}
+
+user_retriever = st.selectbox(
+    "검색기 유형을 선택하세요:",
+    options=list(retriever_options.keys()),
+    format_func=lambda x: retriever_options[x],
+    index=0,
+)
+
+user_top_n = st.slider(
+    "검색할 테이블 정보 개수:",
+    min_value=1,
+    max_value=20,
+    value=5,
+    step=1,
+    help="검색할 테이블 정보의 개수를 설정합니다. 값이 클수록 더 많은 테이블 정보를 검색하지만 처리 시간이 길어질 수 있습니다.",
+)
+
 st.sidebar.title("Output Settings")
 for key, label in SIDEBAR_OPTIONS.items():
     st.sidebar.checkbox(label, value=True, key=key)
@@ -145,5 +180,8 @@ if st.button("쿼리 실행"):
     result = execute_query(
         query=user_query,
         database_env=user_database_env,
+        retriever_name=user_retriever,
+        top_n=user_top_n,
+        device=device,
     )
     display_result(res=result, database=db)
