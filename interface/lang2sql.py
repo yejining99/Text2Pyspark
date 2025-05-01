@@ -121,7 +121,6 @@ def display_result(
 
 
 db = ConnectDB()
-db.connect_to_clickhouse()
 
 st.title("Lang2SQL")
 
