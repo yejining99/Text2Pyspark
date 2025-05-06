@@ -45,10 +45,12 @@ class DisplayChart:
         markdown_string = markdown_string.content.split("```")[1][6:].strip()
 
         # Regex pattern to match Python code blocks
-        pattern = r"```[\w\s]*python\n([\s\S]*?)```|```([\s\S]*?)```"
+        pattern = r"```[\w\s]*python\n([\s\S]*?)```|```([\s\S]*?)```"  # 여러 문자와 공백 뒤에 python이 나오고, 줄바꿈 이후의 모든 내용
 
         # Find all matches in the markdown string
-        matches = re.findall(pattern, markdown_string, re.IGNORECASE)
+        matches = re.findall(
+            pattern, markdown_string, re.IGNORECASE
+        )  # 대소문자 구분 안함
 
         # Extract the Python code from the matches
         python_code = []
