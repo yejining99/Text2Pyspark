@@ -31,6 +31,7 @@ class QueryMakerState(TypedDict):
     searched_tables: dict[str, dict[str, str]]
     best_practice_query: str
     refined_input: str
+    question_profile: dict
     generated_query: str
     retriever_name: str
     top_n: int
