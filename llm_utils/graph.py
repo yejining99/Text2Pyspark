@@ -16,6 +16,7 @@ from llm_utils.chains import (
 
 from llm_utils.tools import get_info_from_db
 from llm_utils.retrieval import search_tables
+from llm_utils.utils import profile_to_text
 
 # 노드 식별자 정의
 QUERY_REFINER = "query_refiner"
@@ -62,6 +63,26 @@ def query_refiner_node(state: QueryMakerState):
     )
     state["messages"].append(res)
     state["refined_input"] = res
+    return state
+
+
+# 노드 함수: QUERY_REFINER 노드
+def query_refiner_with_profile_node(state: QueryMakerState):
+
+    profile_bullets = profile_to_text(state["question_profile"])
+    res = query_refiner_with_profile_chain.invoke(
+        input={
+            "user_input": [state["messages"][0].content],
+            "user_database_env": [state["user_database_env"]],
+            "best_practice_query": [state["best_practice_query"]],
+            "searched_tables": [json.dumps(state["searched_tables"])],
+            "profile_prompt": [profile_bullets],
+        }
+    )
+    state["messages"].append(res)
+    state["refined_input"] = res
+
+    print("refined_input before context enrichment : ", res.content)
     return state
 
 
