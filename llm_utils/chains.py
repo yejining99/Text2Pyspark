@@ -4,11 +4,13 @@ from langchain_core.prompts import (
     MessagesPlaceholder,
     SystemMessagePromptTemplate,
 )
+from pydantic import BaseModel, Field
 
 from .llm_factory import get_llm
 
 from dotenv import load_dotenv
 from prompt.template_loader import get_prompt_template
+
 
 env_path = os.path.join(os.getcwd(), ".env")
 
@@ -18,6 +20,16 @@ else:
     print(f"⚠️  환경변수 파일(.env)이 {os.getcwd()}에 없습니다!")
 
 llm = get_llm()
+
+
+class QuestionProfile(BaseModel):
+    is_timeseries: bool = Field(description="시계열 분석 필요 여부")
+    is_aggregation: bool = Field(description="집계 함수 필요 여부")
+    has_filter: bool = Field(description="조건 필터 필요 여부")
+    is_grouped: bool = Field(description="그룹화 필요 여부")
+    has_ranking: bool = Field(description="정렬/순위 필요 여부")
+    has_temporal_comparison: bool = Field(description="기간 비교 포함 여부")
+    intent_type: str = Field(description="질문의 주요 의도 유형")
 
 
 def create_query_refiner_chain(llm):
@@ -99,6 +111,33 @@ def create_query_refiner_with_profile_chain(llm):
     )
 
     return tool_choice_prompt | llm
+
+
+from langchain.prompts import PromptTemplate
+
+profile_prompt = PromptTemplate(
+    input_variables=["question"],
+    template="""
+You are an assistant that analyzes a user question and extracts the following profiles as JSON:
+- is_timeseries (boolean)
+- is_aggregation (boolean)
+- has_filter (boolean)
+- is_grouped (boolean)
+- has_ranking (boolean)
+- has_temporal_comparison (boolean)
+- intent_type (one of: trend, lookup, comparison, distribution)
+
+Return only valid JSON matching the QuestionProfile schema.
+
+Question:
+{question}
+""".strip(),
+)
+
+
+def create_profile_extraction_chain(llm):
+    chain = profile_prompt | llm.with_structured_output(QuestionProfile)
+    return chain
 
 
 query_refiner_chain = create_query_refiner_chain(llm)
