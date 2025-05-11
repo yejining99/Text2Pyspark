@@ -11,6 +11,7 @@ from .llm_factory import get_llm
 from llm_utils.chains import (
     query_refiner_chain,
     query_maker_chain,
+    query_refiner_with_profile_chain,
 )
 
 from llm_utils.tools import get_info_from_db
@@ -36,6 +37,17 @@ class QueryMakerState(TypedDict):
     retriever_name: str
     top_n: int
     device: str
+
+
+# 노드 함수: PROFILE_EXTRACTION 노드
+def profile_extraction_node(state: QueryMakerState):
+
+    result = query_refiner_with_profile_chain.invoke(
+        {"question": state["messages"][0].content}
+    )
+
+    state["question_profile"] = result
+    return state
 
 
 # 노드 함수: QUERY_REFINER 노드
