@@ -12,6 +12,7 @@ from llm_utils.chains import (
     query_refiner_chain,
     query_maker_chain,
     query_refiner_with_profile_chain,
+    profile_extraction_chain,
 )
 
 from llm_utils.tools import get_info_from_db
@@ -24,6 +25,8 @@ GET_TABLE_INFO = "get_table_info"
 TOOL = "tool"
 TABLE_FILTER = "table_filter"
 QUERY_MAKER = "query_maker"
+PROFILE_EXTRACTION = "profile_extraction"
+CONTEXT_ENRICHMENT = "context_enrichment"
 
 
 # 상태 타입 정의 (추가 상태 정보와 메시지들을 포함)
@@ -43,11 +46,10 @@ class QueryMakerState(TypedDict):
 # 노드 함수: PROFILE_EXTRACTION 노드
 def profile_extraction_node(state: QueryMakerState):
 
-    result = query_refiner_with_profile_chain.invoke(
-        {"question": state["messages"][0].content}
-    )
+    result = profile_extraction_chain.invoke({"question": state["messages"][0].content})
 
     state["question_profile"] = result
+    print("profile_extraction_node : ", result)
     return state
 
 
@@ -132,6 +134,7 @@ def context_enrichment_node(state: QueryMakerState):
     from langchain_core.messages import HumanMessage
 
     state["messages"].append(HumanMessage(content=enriched_text.content))
+    print("After context enrichment : ", enriched_text.content)
 
     return state
 

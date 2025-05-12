@@ -142,6 +142,7 @@ def create_profile_extraction_chain(llm):
 
 query_refiner_chain = create_query_refiner_chain(llm)
 query_maker_chain = create_query_maker_chain(llm)
+profile_extraction_chain = create_profile_extraction_chain(llm)
 query_refiner_with_profile_chain = create_query_refiner_with_profile_chain(llm)
 
 if __name__ == "__main__":
