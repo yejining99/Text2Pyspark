@@ -9,7 +9,8 @@ import streamlit as st
 from langchain.chains.sql_database.prompt import SQL_PROMPTS
 from langchain_core.messages import HumanMessage
 
-from llm_utils.connect_db import ConnectDB
+from db_utils import get_db_connector
+from db_utils.base_connector import BaseConnector
 from llm_utils.graph import builder
 
 import re
@@ -87,7 +88,7 @@ def execute_query(
 def display_result(
     *,
     res: dict,
-    database: ConnectDB,
+    database: BaseConnector,
 ) -> None:
     """
     Lang2SQL 실행 결과를 Streamlit 화면에 출력합니다.
@@ -131,7 +132,7 @@ def display_result(
         st.dataframe(df.head(10) if len(df) > 10 else df)
 
 
-db = ConnectDB()
+db = get_db_connector()
 
 st.title("Lang2SQL")
 
