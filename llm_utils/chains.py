@@ -113,55 +113,28 @@ def create_query_refiner_with_profile_chain(llm):
     return tool_choice_prompt | llm
 
 
-from langchain.prompts import PromptTemplate
-
-profile_prompt = PromptTemplate(
-    input_variables=["question"],
-    template="""
-You are an assistant that analyzes a user question and extracts the following profiles as JSON:
-- is_timeseries (boolean)
-- is_aggregation (boolean)
-- has_filter (boolean)
-- is_grouped (boolean)
-- has_ranking (boolean)
-- has_temporal_comparison (boolean)
-- intent_type (one of: trend, lookup, comparison, distribution)
-
-Return only valid JSON matching the QuestionProfile schema.
-
-Question:
-{question}
-""".strip(),
-)
-
-
 def create_query_enrichment_chain(llm):
+    prompt = get_prompt_template("query_enrichment_prompt")
 
-    enrichment_prompt = PromptTemplate(
-        input_variables=["refined_question", "profiles", "related_tables"],
-        template="""
-    You are a smart assistant that takes a user question and enriches it using:
-    1. Question profiles: {profiles}
-    2. Table metadata (names, columns, descriptions): 
-    {related_tables}
-
-    Tasks:
-    - Correct any wrong terms by matching them to actual column names.
-    - If the question is time-series or aggregation, add explicit hints (e.g., "over the last 30 days").
-    - If needed, map natural language terms to actual column values (e.g., ‘미국’ → ‘USA’ for country_code).
-    - Output the enriched question only.
-
-    Refined question: 
-    {refined_question}
-
-    Using the refined version for enrichment, but keep original intent in mind.
-    """.strip(),
+    enrichment_prompt = ChatPromptTemplate.from_messages(
+        [
+            SystemMessagePromptTemplate.from_template(prompt),
+        ]
     )
 
-    return enrichment_prompt | llm
+    chain = enrichment_prompt | llm
+    return chain
 
 
 def create_profile_extraction_chain(llm):
+    prompt = get_prompt_template("profile_extraction_prompt")
+
+    profile_prompt = ChatPromptTemplate.from_messages(
+        [
+            SystemMessagePromptTemplate.from_template(prompt),
+        ]
+    )
+
     chain = profile_prompt | llm.with_structured_output(QuestionProfile)
     return chain
 
