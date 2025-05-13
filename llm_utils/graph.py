@@ -13,6 +13,7 @@ from llm_utils.chains import (
     query_maker_chain,
     query_refiner_with_profile_chain,
     profile_extraction_chain,
+    query_enrichment_chain,
 )
 
 from llm_utils.tools import get_info_from_db
@@ -142,36 +143,13 @@ def context_enrichment_node(state: QueryMakerState):
     question_profile = state["question_profile"].model_dump()
     question_profile_json = json.dumps(question_profile, ensure_ascii=False, indent=2)
 
-    from langchain.prompts import PromptTemplate
-
-    enrichment_prompt = PromptTemplate(
-        input_variables=["refined_question", "profiles", "related_tables"],
-        template="""
-    You are a smart assistant that takes a user question and enriches it using:
-    1. Question profiles: {profiles}
-    2. Table metadata (names, columns, descriptions): 
-    {related_tables}
-
-    Tasks:
-    - Correct any wrong terms by matching them to actual column names.
-    - If the question is time-series or aggregation, add explicit hints (e.g., "over the last 30 days").
-    - If needed, map natural language terms to actual column values (e.g., ‘미국’ → ‘USA’ for country_code).
-    - Output the enriched question only.
-
-    Refined question: 
-    {refined_question}
-
-    Using the refined version for enrichment, but keep original intent in mind.
-    """.strip(),
+    enriched_text = query_enrichment_chain.invoke(
+        input={
+            "refined_question": state["refined_input"],
+            "profiles": question_profile_json,
+            "related_tables": searched_tables_json,
+        }
     )
-
-    llm = get_llm()
-    prompt = enrichment_prompt.format_prompt(
-        refined_question=state["refined_input"],
-        profiles=question_profile_json,
-        related_tables=searched_tables_json,
-    )
-    enriched_text = llm.invoke(prompt.to_messages())
 
     state["refined_input"] = enriched_text
     state["messages"].append(enriched_text)

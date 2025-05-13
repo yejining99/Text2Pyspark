@@ -135,6 +135,32 @@ Question:
 )
 
 
+def create_query_enrichment_chain(llm):
+
+    enrichment_prompt = PromptTemplate(
+        input_variables=["refined_question", "profiles", "related_tables"],
+        template="""
+    You are a smart assistant that takes a user question and enriches it using:
+    1. Question profiles: {profiles}
+    2. Table metadata (names, columns, descriptions): 
+    {related_tables}
+
+    Tasks:
+    - Correct any wrong terms by matching them to actual column names.
+    - If the question is time-series or aggregation, add explicit hints (e.g., "over the last 30 days").
+    - If needed, map natural language terms to actual column values (e.g., ‘미국’ → ‘USA’ for country_code).
+    - Output the enriched question only.
+
+    Refined question: 
+    {refined_question}
+
+    Using the refined version for enrichment, but keep original intent in mind.
+    """.strip(),
+    )
+
+    return enrichment_prompt | llm
+
+
 def create_profile_extraction_chain(llm):
     chain = profile_prompt | llm.with_structured_output(QuestionProfile)
     return chain
@@ -144,6 +170,7 @@ query_refiner_chain = create_query_refiner_chain(llm)
 query_maker_chain = create_query_maker_chain(llm)
 profile_extraction_chain = create_profile_extraction_chain(llm)
 query_refiner_with_profile_chain = create_query_refiner_with_profile_chain(llm)
+query_enrichment_chain = create_query_enrichment_chain(llm)
 
 if __name__ == "__main__":
     query_refiner_chain.invoke()
