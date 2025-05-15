@@ -3,11 +3,11 @@ from setuptools import setup, find_packages
 import os
 import glob
 
-with open("README.md", "r", encoding="utf-8") as fh:
+with open("docs/README.md", "r", encoding="utf-8") as fh:
     long_description = fh.read()
 
 # 프롬프트 파일들을 찾습니다
-prompt_files = glob.glob('prompt/*.md')
+prompt_files = glob.glob("prompt/*.md")
 prompt_files = [os.path.basename(f) for f in prompt_files]
 
 setup(
@@ -19,13 +19,12 @@ setup(
     description="Lang2SQL - Query Generator for Data Warehouse",
     long_description=long_description,
     long_description_content_type="text/markdown",
-    packages=find_packages() + ['prompt'],  # prompt 패키지 직접 추가
+    packages=find_packages(),  # my_package를 자동으로 찾음
+    packages=find_packages() + ["prompt"],  # prompt 패키지 직접 추가
     package_data={
-        'prompt': ['*.md', '*.py'],  # prompt 디렉토리의 모든 .md 파일 포함
+        "prompt": ["*.md", "*.py"],  # prompt 디렉토리의 모든 .md 파일 포함
     },
-    data_files=[
-        ('prompt', [os.path.join('prompt', f) for f in prompt_files])
-    ],
+    data_files=[("prompt", [os.path.join("prompt", f) for f in prompt_files])],
     include_package_data=True,
     install_requires=[
         "langgraph==0.2.62",
