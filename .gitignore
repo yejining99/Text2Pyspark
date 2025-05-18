@@ -9,3 +9,5 @@ dist/
 test_lhm/
 .cursorignore
 .vscode
+table_info_db
+ko_reranker_local
