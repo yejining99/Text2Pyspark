@@ -179,17 +179,17 @@ def display_result(
             st.dataframe(df.head(10) if len(df) > 10 else df)
         except Exception as e:
             st.error(f"쿼리 실행 중 오류 발생: {e}")
-    if should_show("show_chart") and df is not None:
+    if should_show("show_chart"):
+        df = database.run_sql(sql)
         st.markdown("**쿼리 결과 시각화:**")
         display_code = DisplayChart(
             question=res["refined_input"].content,
             sql=sql,
-            df_metadata=f"Running df.dtypes gives:\n{df.dtypes}"
+            df_metadata=f"Running df.dtypes gives:\n{df.dtypes}",
         )
         # plotly_code 변수도 따로 보관할 필요 없이 바로 그려도 됩니다
         fig = display_code.get_plotly_figure(
-            plotly_code=display_code.generate_plotly_code(),
-            df=df
+            plotly_code=display_code.generate_plotly_code(), df=df
         )
         st.plotly_chart(fig)
 
