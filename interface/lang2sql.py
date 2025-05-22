@@ -11,9 +11,9 @@ from langchain_core.messages import AIMessage, HumanMessage
 
 from llm_utils.connect_db import ConnectDB
 from llm_utils.graph import builder
+from llm_utils.enriched_graph import builder as enriched_builder
 from llm_utils.display_chart import DisplayChart
 from llm_utils.llm_response_parser import LLMResponseParser
-
 
 DEFAULT_QUERY = "고객 데이터를 기반으로 유니크한 유저 수를 카운트하는 쿼리"
 SIDEBAR_OPTIONS = {
@@ -77,7 +77,10 @@ def execute_query(
 
     graph = st.session_state.get("graph")
     if graph is None:
-        graph = builder.compile()
+        graph_builder = (
+            enriched_builder if st.session_state.get("use_enriched") else builder
+        )
+        graph = graph_builder.compile()
         st.session_state["graph"] = graph
 
     res = graph.invoke(
@@ -198,14 +201,29 @@ db = ConnectDB()
 
 st.title("Lang2SQL")
 
+# 워크플로우 선택(UI)
+use_enriched = st.sidebar.checkbox(
+    "프로파일 추출 & 컨텍스트 보강 워크플로우 사용", value=False
+)
+
 # 세션 상태 초기화
-if "graph" not in st.session_state:
-    st.session_state["graph"] = builder.compile()
+if (
+    "graph" not in st.session_state
+    or st.session_state.get("use_enriched") != use_enriched
+):
+    graph_builder = enriched_builder if use_enriched else builder
+    st.session_state["graph"] = graph_builder.compile()
+
+    # 프로파일 추출 & 컨텍스트 보강 그래프
+    st.session_state["use_enriched"] = use_enriched
     st.info("Lang2SQL이 성공적으로 시작되었습니다.")
 
 # 새로고침 버튼 추가
 if st.sidebar.button("Lang2SQL 새로고침"):
-    st.session_state["graph"] = builder.compile()
+    graph_builder = (
+        enriched_builder if st.session_state.get("use_enriched") else builder
+    )
+    st.session_state["graph"] = graph_builder.compile()
     st.sidebar.success("Lang2SQL이 성공적으로 새로고침되었습니다.")
 
 user_query = st.text_area(
