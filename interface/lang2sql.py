@@ -11,7 +11,9 @@ from langchain_core.messages import AIMessage, HumanMessage
 
 from llm_utils.connect_db import ConnectDB
 from llm_utils.graph import builder
+from llm_utils.display_chart import DisplayChart
 from llm_utils.llm_response_parser import LLMResponseParser
+
 
 DEFAULT_QUERY = "고객 데이터를 기반으로 유니크한 유저 수를 카운트하는 쿼리"
 SIDEBAR_OPTIONS = {
@@ -177,6 +179,19 @@ def display_result(
             st.dataframe(df.head(10) if len(df) > 10 else df)
         except Exception as e:
             st.error(f"쿼리 실행 중 오류 발생: {e}")
+    if should_show("show_chart"):
+        df = database.run_sql(sql)
+        st.markdown("**쿼리 결과 시각화:**")
+        display_code = DisplayChart(
+            question=res["refined_input"].content,
+            sql=sql,
+            df_metadata=f"Running df.dtypes gives:\n{df.dtypes}",
+        )
+        # plotly_code 변수도 따로 보관할 필요 없이 바로 그려도 됩니다
+        fig = display_code.get_plotly_figure(
+            plotly_code=display_code.generate_plotly_code(), df=df
+        )
+        st.plotly_chart(fig)
 
 
 db = ConnectDB()
