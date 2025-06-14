@@ -236,7 +236,7 @@ Lang2SQL은 **가짜연구소의 인과추론팀**에서 개발중인 프로젝�
 
 ## 📄 라이선스
 
-이 프로젝트는 **MIT 라이선스** 입니다.
+- This project is licensed under the [MIT License](https://opensource.org/licenses/MIT).
 
 ---
 
