@@ -93,30 +93,29 @@ def _get_table_info(max_workers: int = 8) -> Dict[str, str]:
     return table_info
 
 
-def _get_column_info(table_name: str, max_workers: int = 8) -> List[Dict[str, str]]:
+def _get_column_info(
+    table_name: str, urn_table_mapping: Dict[str, str], max_workers: int = 8
+) -> List[Dict[str, str]]:
     """table_name에 해당하는 컬럼 이름과 설명을 가져오는 함수
 
     Args:
         table_name (str): 테이블 이름
+        urn_table_mapping (Dict[str, str]): URN-테이블명 매핑 딕셔너리
         max_workers (int, optional): 병렬 처리에 사용할 최대 쓰레드 수. Defaults to 8.
 
     Returns:
         List[Dict[str, str]]: 컬럼 정보 리스트
     """
+    # 해당 테이블의 URN 직접 찾기
+    target_urn = urn_table_mapping.get(table_name)
+    if not target_urn:
+        return []
+
+    # Fetcher 생성 및 컬럼 정보 가져오기
     fetcher = _get_fetcher()
-    urns = fetcher.get_urns()
+    column_info = fetcher.get_column_names_and_descriptions(target_urn)
 
-    results = parallel_process(
-        urns,
-        lambda urn: _process_column_info(urn, table_name, fetcher),
-        max_workers=max_workers,
-        show_progress=False,
-    )
-
-    for result in results:
-        if result:
-            return result
-    return []
+    return column_info
 
 
 def get_info_from_db(max_workers: int = 8) -> List[Document]:
@@ -130,9 +129,20 @@ def get_info_from_db(max_workers: int = 8) -> List[Document]:
     """
     table_info = _get_table_info(max_workers=max_workers)
 
+    # URN-테이블명 매핑을 한 번만 생성
+    fetcher = _get_fetcher()
+    urns = list(fetcher.get_urns())
+    urn_table_mapping = {}
+    for urn in urns:
+        table_name = fetcher.get_table_name(urn)
+        if table_name:
+            urn_table_mapping[table_name] = urn
+
     def process_table_info(item: tuple[str, str]) -> str:
         table_name, table_description = item
-        column_info = _get_column_info(table_name, max_workers=max_workers)
+        column_info = _get_column_info(
+            table_name, urn_table_mapping, max_workers=max_workers
+        )
         column_info_str = "\n".join(
             [
                 f"{col['column_name']}: {col['column_description']}"
