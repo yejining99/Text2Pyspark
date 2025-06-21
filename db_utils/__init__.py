@@ -24,6 +24,7 @@ if os.path.exists(env_path):
 else:
     print(f"⚠️  환경변수 파일(.env)이 {os.getcwd()}에 없습니다!")
 
+
 def get_db_connector(db_type: Optional[str] = None, config: Optional[DBConfig] = None):
     """
     Return the appropriate DB connector instance.
@@ -43,7 +44,9 @@ def get_db_connector(db_type: Optional[str] = None, config: Optional[DBConfig] =
     if db_type is None:
         db_type = os.getenv("DB_TYPE")
         if not db_type:
-            raise ValueError("DB type must be provided or set in environment as DB_TYPE.")
+            raise ValueError(
+                "DB type must be provided or set in environment as DB_TYPE."
+            )
 
     db_type = db_type.lower()
 
@@ -51,15 +54,15 @@ def get_db_connector(db_type: Optional[str] = None, config: Optional[DBConfig] =
         config = load_config_from_env(db_type.upper())
 
         connector_map = {
-        "clickhouse": ClickHouseConnector,
-        "postgresql": PostgresConnector,
-        "mysql": MySQLConnector,
-        "mariadb": MariaDBConnector,
-        "oracle": OracleConnector,
-        "duckdb": DuckDBConnector,
-        "databricks": DatabricksConnector,
-        "snowflake": SnowflakeConnector,
-    }
+            "clickhouse": ClickHouseConnector,
+            "postgresql": PostgresConnector,
+            "mysql": MySQLConnector,
+            "mariadb": MariaDBConnector,
+            "oracle": OracleConnector,
+            "duckdb": DuckDBConnector,
+            "databricks": DatabricksConnector,
+            "snowflake": SnowflakeConnector,
+        }
 
     if db_type not in connector_map:
         logger.error(f"Unsupported DB type: {db_type}")
@@ -87,7 +90,6 @@ def get_db_connector(db_type: Optional[str] = None, config: Optional[DBConfig] =
     return connector_map[db_type](config)
 
 
-
 def load_config_from_env(prefix: str) -> DBConfig:
     """
     Load DBConfig from environment variables with a given prefix.
@@ -107,7 +109,9 @@ def load_config_from_env(prefix: str) -> DBConfig:
     # Extract standard values
     config = {
         "host": os.getenv(f"{prefix}_HOST"),
-        "port": int(os.getenv(f"{prefix}_PORT")) if os.getenv(f"{prefix}_PORT") else None,
+        "port": (
+            int(os.getenv(f"{prefix}_PORT")) if os.getenv(f"{prefix}_PORT") else None
+        ),
         "user": os.getenv(f"{prefix}_USER"),
         "password": os.getenv(f"{prefix}_PASSWORD"),
         "database": os.getenv(f"{prefix}_DATABASE"),
@@ -117,7 +121,7 @@ def load_config_from_env(prefix: str) -> DBConfig:
     extra = {}
     for key, value in os.environ.items():
         if key.startswith(f"{prefix}_"):
-            suffix = key[len(f"{prefix}_"):]
+            suffix = key[len(f"{prefix}_") :]
             if suffix.upper() not in base_keys:
                 extra[suffix.lower()] = value
 

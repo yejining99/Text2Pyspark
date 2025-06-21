@@ -3,10 +3,12 @@ from clickhouse_driver import Client
 import pandas as pd
 from db_utils import DBConfig, logger
 
+
 class ClickHouseConnector(BaseConnector):
     """
     Connect to ClickHouse and execute SQL queries.
     """
+
     client = None
 
     def __init__(self, config: DBConfig):
@@ -54,8 +56,8 @@ class ClickHouseConnector(BaseConnector):
             self.connect()
 
         try:
-            result = self.client.query(sql).result()
-            return pd.DataFrame(result)
+            result = self.client.query_dataframe(sql)
+            return result
         except Exception as e:
             logger.error(f"Failed to execute SQL query: {e}")
             raise
