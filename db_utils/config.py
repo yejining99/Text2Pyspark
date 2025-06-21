@@ -1,7 +1,8 @@
 from typing import Optional, Dict, TypedDict
 
+
 class DBConfig(TypedDict):
-	
+
     host: str
     port: Optional[int]
     user: Optional[str]

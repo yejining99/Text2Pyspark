@@ -4,10 +4,12 @@ from .base_connector import BaseConnector
 from .config import DBConfig
 from .logger import logger
 
+
 class SQLiteConnector(BaseConnector):
     """
     Connect to SQLite and execute SQL queries.
     """
+
     connection = None
 
     def __init__(self, config: DBConfig):

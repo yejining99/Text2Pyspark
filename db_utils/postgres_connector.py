@@ -4,6 +4,7 @@ from .base_connector import BaseConnector
 from .config import DBConfig
 from .logger import logger
 
+
 class PostgresConnector(BaseConnector):
     """
     Connect to PostgreSQL and execute SQL queries.

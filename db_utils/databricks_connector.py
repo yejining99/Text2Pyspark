@@ -4,10 +4,12 @@ from .base_connector import BaseConnector
 from .config import DBConfig
 from .logger import logger
 
+
 class DatabricksConnector(BaseConnector):
     """
     Connect to Databricks SQL Warehouse and execute queries.
     """
+
     connection = None
 
     def __init__(self, config: DBConfig):

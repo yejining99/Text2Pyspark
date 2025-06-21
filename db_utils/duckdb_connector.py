@@ -4,6 +4,7 @@ from .base_connector import BaseConnector
 from .config import DBConfig
 from .logger import logger
 
+
 class DuckDBConnector(BaseConnector):
     """
     Connect to DuckDB and execute SQL queries.

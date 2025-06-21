@@ -4,10 +4,12 @@ from .base_connector import BaseConnector
 from .config import DBConfig
 from .logger import logger
 
+
 class MySQLConnector(BaseConnector):
     """
     Connect to MySQL and execute SQL queries.
     """
+
     connection = None
 
     def __init__(self, config: DBConfig):
@@ -34,7 +36,7 @@ class MySQLConnector(BaseConnector):
                 port=self.port,
                 user=self.user,
                 password=self.password,
-                database=self.database
+                database=self.database,
             )
             logger.info("Successfully connected to MySQL.")
         except Exception as e:

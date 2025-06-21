@@ -1,6 +1,7 @@
 from abc import ABC, abstractmethod
 import pandas as pd
 
+
 class BaseConnector(ABC):
     """
     Abstract base class for database connectors.

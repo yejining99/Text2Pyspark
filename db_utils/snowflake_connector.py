@@ -4,10 +4,12 @@ import pandas as pd
 from .config import DBConfig
 from .logger import logger
 
+
 class SnowflakeConnector(BaseConnector):
     """
     Connect to Snowflake database and execute SQL queries.
     """
+
     connection = None
 
     def __init__(self, config: DBConfig):

@@ -27,6 +27,7 @@ if os.path.exists(env_path):
 else:
     print(f"⚠️  환경변수 파일(.env)이 {os.getcwd()}에 없습니다!")
 
+
 def get_llm(**kwargs) -> BaseLanguageModel:
     """
     return chat model interface
@@ -94,7 +95,9 @@ def get_llm_gemini(**kwargs) -> BaseLanguageModel:
 def get_llm_ollama(**kwargs) -> BaseLanguageModel:
     base_url = os.getenv("OLLAMA_LLM_BASE_URL")
     if base_url:
-        return ChatOllama(base_url=base_url, model=os.getenv("OLLAMA_LLM_MODEL"), **kwargs)
+        return ChatOllama(
+            base_url=base_url, model=os.getenv("OLLAMA_LLM_MODEL"), **kwargs
+        )
     else:
         return ChatOllama(model=os.getenv("OLLAMA_LLM_MODEL"), **kwargs)
 

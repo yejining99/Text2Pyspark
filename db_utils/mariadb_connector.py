@@ -4,11 +4,13 @@ from .base_connector import BaseConnector
 from .config import DBConfig
 from .logger import logger
 
+
 class MariaDBConnector(BaseConnector):
     """
     Connect to MariaDB and execute SQL queries.
     This class uses **mysql-connector-python** to connect to the MariaDB server.
     """
+
     connection = None
 
     def __init__(self, config: DBConfig):
@@ -35,7 +37,7 @@ class MariaDBConnector(BaseConnector):
                 port=self.port,
                 user=self.user,
                 password=self.password,
-                database=self.database
+                database=self.database,
             )
             logger.info("Successfully connected to MariaDB.")
         except Exception as e:
