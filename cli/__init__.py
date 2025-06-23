@@ -1,16 +1,29 @@
 """
-Datahub GMS 서버 URL을 설정하고, 필요 시 Streamlit 인터페이스를 실행하는 CLI 프로그램입니다.
+Lang2SQL CLI 프로그램입니다.
+이 프로그램은 Datahub GMS 서버 URL을 설정하고, 필요 시 Streamlit 인터페이스를 실행합니다.
+
+명령어 예시: lang2sql --datahub_server http://localhost:8080 --run-streamlit
 """
 
+import logging
 import subprocess
 
 import click
 
+from llm_utils.check_server import CheckServer
 from llm_utils.tools import set_gms_server
+from version import __version__
+
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s [%(levelname)s] %(message)s",
+    datefmt="%Y-%m-%d %H:%M:%S",
+)
+logger = logging.getLogger(__name__)
 
 
 @click.group()
-@click.version_option(version="0.1.4")
+@click.version_option(version=__version__)
 @click.pass_context
 @click.option(
     "--datahub_server",
@@ -64,11 +77,20 @@ def cli(
         'set_gms_server' 함수에서 ValueError가 발생할 경우, 프로그램은 비정상 종료(exit code 1)합니다.
     """
 
-    try:
+    logger.info(
+        "Initialization started: GMS server = %s, run_streamlit = %s, port = %d",
+        datahub_server,
+        run_streamlit,
+        port,
+    )
+
+    if CheckServer.is_gms_server_healthy(url=datahub_server):
         set_gms_server(datahub_server)
-    except ValueError as e:
-        click.secho(f"GMS 서버 URL 설정 실패: {str(e)}", fg="red")
+        logger.info("GMS server URL successfully set: %s", datahub_server)
+    else:
+        logger.error("GMS server health check failed. URL: %s", datahub_server)
         ctx.exit(1)
+
     if run_streamlit:
         run_streamlit_command(port)
 
@@ -89,6 +111,8 @@ def run_streamlit_command(port: int) -> None:
         - subprocess 호출 실패 시 예외가 발생할 수 있습니다.
     """
 
+    logger.info("Starting Streamlit application on port %d...", port)
+
     try:
         subprocess.run(
             [
@@ -100,8 +124,9 @@ def run_streamlit_command(port: int) -> None:
             ],
             check=True,
         )
+        logger.info("Streamlit application started successfully.")
     except subprocess.CalledProcessError as e:
-        click.echo(f"Streamlit 실행 실패: {e}")
+        logger.error("Failed to start Streamlit application: %s", e)
         raise
 
 
@@ -132,4 +157,5 @@ def run_streamlit_cli_command(port: int) -> None:
         - Streamlit 실행에 실패할 경우 subprocess 호출에서 예외가 발생할 수 있습니다.
     """
 
+    logger.info("Executing 'run-streamlit' command on port %d...", port)
     run_streamlit_command(port)
