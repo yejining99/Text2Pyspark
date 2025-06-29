@@ -217,45 +217,32 @@ def query_command(
     """
 
     try:
-        if use_enriched_graph:
-            from llm_utils.graph_utils.enriched_graph import builder
-        else:
-            from llm_utils.graph_utils.basic_graph import builder
-        from llm_utils.llm_response_parser import LLMResponseParser
-        from langchain_core.messages import HumanMessage
+        from llm_utils.query_executor import execute_query, extract_sql_from_result
 
-        logger.info("Processing query: %s", question)
-        logger.info("Using %s graph", "enriched" if use_enriched_graph else "basic")
-
-        # 그래프 컴파일 및 실행
-        graph = builder.compile()
-        res = graph.invoke(
-            input={
-                "messages": [HumanMessage(content=question)],
-                "user_database_env": database_env,
-                "best_practice_query": "",
-                "retriever_name": retriever_name,
-                "top_n": top_n,
-                "device": device,
-            }
+        # 공용 함수를 사용하여 쿼리 실행
+        res = execute_query(
+            query=question,
+            database_env=database_env,
+            retriever_name=retriever_name,
+            top_n=top_n,
+            device=device,
+            use_enriched_graph=use_enriched_graph,
         )
 
         # SQL 추출 및 출력
-        generated_query = res.get("generated_query")
-        if generated_query:
-            query_text = (
-                generated_query.content
-                if hasattr(generated_query, "content")
-                else str(generated_query)
-            )
-            try:
-                sql = LLMResponseParser.extract_sql(query_text)
-                print(sql)
-            except ValueError:
-                logger.error("SQL을 추출할 수 없습니다.")
-                print(query_text)
+        sql = extract_sql_from_result(res)
+        if sql:
+            print(sql)
         else:
-            logger.error("생성된 쿼리가 없습니다.")
+            # SQL 추출 실패 시 원본 쿼리 텍스트 출력
+            generated_query = res.get("generated_query")
+            if generated_query:
+                query_text = (
+                    generated_query.content
+                    if hasattr(generated_query, "content")
+                    else str(generated_query)
+                )
+                print(query_text)
 
     except Exception as e:
         logger.error("쿼리 처리 중 오류 발생: %s", e)
