@@ -11,8 +11,8 @@ from langchain_core.messages import AIMessage, HumanMessage
 
 from llm_utils.connect_db import ConnectDB
 from llm_utils.display_chart import DisplayChart
-from llm_utils.enriched_graph import builder as enriched_builder
-from llm_utils.graph import builder
+from llm_utils.graph_utils.enriched_graph import builder as enriched_builder
+from llm_utils.graph_utils.basic_graph import builder
 from llm_utils.llm_response_parser import LLMResponseParser
 from llm_utils.token_utils import TokenUtils
 
