@@ -12,6 +12,7 @@ from langchain_core.messages import HumanMessage
 
 from llm_utils.graph_utils.enriched_graph import builder as enriched_builder
 from llm_utils.graph_utils.basic_graph import builder as basic_builder
+from llm_utils.graph_utils.simplified_graph import builder as simplified_builder
 from llm_utils.llm_response_parser import LLMResponseParser
 
 logger = logging.getLogger(__name__)
@@ -25,6 +26,7 @@ def execute_query(
     top_n: int = 5,
     device: str = "cpu",
     use_enriched_graph: bool = False,
+    use_simplified_graph: bool = False,
     session_state: Optional[Union[Dict[str, Any], Any]] = None,
 ) -> Dict[str, Any]:
     """
@@ -52,19 +54,29 @@ def execute_query(
     """
 
     logger.info("Processing query: %s", query)
-    logger.info("Using %s graph", "enriched" if use_enriched_graph else "basic")
+
+    # 그래프 선택
+    if use_simplified_graph:
+        graph_type = "simplified"
+        graph_builder = simplified_builder
+    elif use_enriched_graph:
+        graph_type = "enriched"
+        graph_builder = enriched_builder
+    else:
+        graph_type = "basic"
+        graph_builder = basic_builder
+
+    logger.info("Using %s graph", graph_type)
 
     # 그래프 선택 및 컴파일
     if session_state is not None:
         # Streamlit 환경: 세션 상태에서 그래프 재사용
         graph = session_state.get("graph")
         if graph is None:
-            graph_builder = enriched_builder if use_enriched_graph else basic_builder
             graph = graph_builder.compile()
             session_state["graph"] = graph
     else:
         # CLI 환경: 매번 새로운 그래프 컴파일
-        graph_builder = enriched_builder if use_enriched_graph else basic_builder
         graph = graph_builder.compile()
 
     # 그래프 실행

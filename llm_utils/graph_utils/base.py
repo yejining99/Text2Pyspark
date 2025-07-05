@@ -140,12 +140,21 @@ def context_enrichment_node(state: QueryMakerState):
     searched_tables = state["searched_tables"]
     searched_tables_json = json.dumps(searched_tables, ensure_ascii=False, indent=2)
 
-    question_profile = state["question_profile"].model_dump()
+    # question_profile이 BaseModel인 경우 model_dump() 사용, dict인 경우 그대로 사용
+    if hasattr(state["question_profile"], "model_dump"):
+        question_profile = state["question_profile"].model_dump()
+    else:
+        question_profile = state["question_profile"]
     question_profile_json = json.dumps(question_profile, ensure_ascii=False, indent=2)
+
+    # refined_input이 없는 경우 초기 사용자 입력 사용
+    refined_question = state.get("refined_input", state["messages"][0].content)
+    if hasattr(refined_question, "content"):
+        refined_question = refined_question.content
 
     enriched_text = query_enrichment_chain.invoke(
         input={
-            "refined_question": state["refined_input"],
+            "refined_question": refined_question,
             "profiles": question_profile_json,
             "related_tables": searched_tables_json,
         }
@@ -206,4 +215,34 @@ def query_maker_node_with_db_guide(state: QueryMakerState):
     )
     state["generated_query"] = res.sql
     state["messages"].append(res.explanation)
+    return state
+
+
+# 노드 함수: QUERY_MAKER 노드 (refined_input 없이)
+def query_maker_node_without_refiner(state: QueryMakerState):
+    """
+    refined_input 없이 초기 사용자 입력만을 사용하여 SQL을 생성하는 노드입니다.
+
+    이 노드는 QUERY_REFINER 단계를 건너뛰고, 초기 사용자 입력, 프로파일 정보,
+    컨텍스트 보강 정보를 모두 활용하여 SQL을 생성합니다.
+    """
+    # 컨텍스트 보강된 질문 (refined_input이 없는 경우 초기 입력 사용)
+    enriched_question = state.get("refined_input", state["messages"][0])
+
+    # enriched_question이 AIMessage인 경우 content 추출, 문자열인 경우 그대로 사용
+    if hasattr(enriched_question, "content"):
+        enriched_question_content = enriched_question.content
+    else:
+        enriched_question_content = str(enriched_question)
+
+    res = query_maker_chain.invoke(
+        input={
+            "user_input": [state["messages"][0].content],
+            "refined_input": [enriched_question_content],
+            "searched_tables": [json.dumps(state["searched_tables"])],
+            "user_database_env": [state["user_database_env"]],
+        }
+    )
+    state["generated_query"] = res
+    state["messages"].append(res)
     return state
