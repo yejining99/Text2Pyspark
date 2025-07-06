@@ -47,7 +47,15 @@ class DatahubMetadataFetcher:
             urn, aspect_type=DatasetPropertiesClass
         )
         if dataset_properties:
-            return dataset_properties.get("name", None)
+            database_info = dataset_properties.get("customProperties", {}).get(
+                "dbt_unique_id", ""
+            )
+            if database_info:
+                database_info = database_info.split(".")[-2]
+            else:
+                database_info = ""
+            table_info = dataset_properties.get("name", None)
+            return database_info + "." + table_info
         return None
 
     def get_table_description(self, urn):
