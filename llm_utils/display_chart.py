@@ -1,9 +1,5 @@
 import re
-from llm_utils import llm_factory
-from dotenv import load_dotenv
-from langchain.chains.llm import LLMChain
 from langchain_openai import ChatOpenAI
-from langchain_core.prompts import PromptTemplate
 from langchain_core.messages import HumanMessage, SystemMessage
 import pandas as pd
 import os
@@ -11,10 +7,6 @@ import os
 import plotly
 import plotly.express as px
 import plotly.graph_objects as go
-
-
-# .env 파일 로딩
-load_dotenv()
 
 
 class DisplayChart:

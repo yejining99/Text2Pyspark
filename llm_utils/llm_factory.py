@@ -18,14 +18,6 @@ from langchain_openai import (
     OpenAIEmbeddings,
 )
 
-env_path = os.path.join(os.getcwd(), ".env")
-
-if os.path.exists(env_path):
-    load_dotenv(env_path, override=True)
-    print(f"✅ 환경변수 파일(.env)이 {os.getcwd()}에 로드되었습니다!")
-else:
-    print(f"⚠️  환경변수 파일(.env)이 {os.getcwd()}에 없습니다!")
-
 
 def get_llm(**kwargs) -> BaseLanguageModel:
     """
