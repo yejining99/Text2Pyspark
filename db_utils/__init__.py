@@ -3,8 +3,6 @@ import os
 from .config import DBConfig
 from .logger import logger
 
-from dotenv import load_dotenv
-
 from .base_connector import BaseConnector
 
 from .clickhouse_connector import ClickHouseConnector
@@ -17,12 +15,6 @@ from .databricks_connector import DatabricksConnector
 from .snowflake_connector import SnowflakeConnector
 
 env_path = os.path.join(os.getcwd(), ".env")
-
-if os.path.exists(env_path):
-    load_dotenv(env_path, override=True)
-    print(f"✅ 환경변수 파일(.env)이 {os.getcwd()}에 로드되었습니다!")
-else:
-    print(f"⚠️  환경변수 파일(.env)이 {os.getcwd()}에 없습니다!")
 
 
 def get_db_connector(db_type: Optional[str] = None, config: Optional[DBConfig] = None):
