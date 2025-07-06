@@ -1,4 +1,4 @@
-<h1 align="center"> Lang2SQL </h1>
+# Lang2SQL
 
 <div align="center">
 <a href="https://pseudo-lab.com"><img src="https://img.shields.io/badge/PseudoLab-S10-3776AB" alt="PseudoLab"/></a>
@@ -8,196 +8,258 @@
 <a href="https://github.com/CausalInferenceLab/lang2sql/pulls"><img src="https://img.shields.io/github/issues-pr/CausalInferenceLab/lang2sql" alt="Pull Requests Badge"/></a>
 <a href="https://github.com/CausalInferenceLab/lang2sql/issues"><img src="https://img.shields.io/github/issues/CausalInferenceLab/lang2sql" alt="Issues Badge"/></a>
 <a href="https://github.com/CausalInferenceLab/lang2sql/graphs/contributors"><img alt="GitHub contributors" src="https://img.shields.io/github/contributors/CausalInferenceLab/lang2sql?color=2b9348"></a>
-<a href="https://hits.seeyoufarm.com"><img src="https://hits.seeyoufarm.com/api/count/incr/badge.svg?url=https%3A%2F%2Fgithub.com%2FCausalInferenceLab%2Flang2sql&count_bg=%2379C83D&title_bg=%23555555&icon=&icon_color=%23E7E7E7&title=hits&edge_flat=false"/></a>
+<a href="https://pypi.org/project/lang2sql/"><img src="https://img.shields.io/pypi/v/lang2sql" alt="PyPI version"/></a>
+<a href="https://pypi.org/project/lang2sql/"><img src="https://img.shields.io/pypi/dm/lang2sql" alt="PyPI downloads"/></a>
+<a href="https://hits.sh/github.com/CausalInferenceLab/lang2sql/"><img alt="Hits" src="https://hits.sh/github.com/CausalInferenceLab/lang2sql.svg"/></a>
 </div>
-<br>
 
-<!-- sheilds: https://shields.io/ -->
-<!-- hits badge: https://hits.seeyoufarm.com/ -->
+<p align="center">
+  <strong>우리는 함께 코드와 아이디어를 나누며 더 나은 데이터 환경을 만들기 위한 오픈소스 여정을 떠납니다. 🌍💡</strong>
+</p>
 
-> "우리는 함께 코드와 아이디어를 나누며 더 나은 데이터 환경을 만들기 위한 오픈소스 여정을 떠납니다. 🌍💡"
+<p align="center">
+  <em>"모두가 더 가치 있는 일에 집중할 수 있기를 바랍니다."</em>
+</p>
 
+---
 
-## 프로젝트 개요 (Project Overview)
+## 🚀 Lang2SQL이란?
 
+Lang2SQL은 자연어 쿼리를 최적화된 SQL 문으로 변환하는 오픈소스 도구입니다. LangGraph와 DataHub 통합으로 구축되어, 복잡한 데이터베이스 스키마에 대한 깊은 지식 없이도 데이터 사용자들이 효율적인 SQL 쿼리를 생성할 수 있도록 도와줍니다.
 
-`🚀 신입이 SQL을 두려워하지 않도록`
+### 🎯 주요 기능
 
-🤔 처음 데이터팀에 합류하면 가장 먼저 마주하는 고민들:
-- 🤯 "테이블이 너무 많아! 뭐부터 봐야 하지?"
-- 🧐 "조인은 이렇게 걸어도 되나?"
-- 🐌 "이 SQL, 성능 괜찮을까?"
-- 😰 "어떻게 쿼리해야 인사이트를 얻을 수 있을까?"
+- **🗣️ 자연어를 SQL로 변환**: 일상 언어를 정확한 SQL 쿼리로 변환
+- **📊 스마트 테이블 발견**: 의미론적 검색을 사용하여 관련 테이블을 자동으로 찾기
+- **🔍 스키마 인식**: DataHub 메타데이터를 활용한 정확한 컬럼 매핑
+- **🛠️ 웹 인터페이스**: 대화형 Streamlit 앱을 통한 사용
+- **📈 시각화**: 생성된 SQL 쿼리 결과를 다양한 차트와 그래프로 시각화하여 데이터 인사이트를 직관적으로 파악
 
-💡 Lang2SQL로 해결해 봅시다.
-- ✅ 자연어 입력 → 적절한 테이블 추천
-- ✅ 올바른 컬럼 조합으로 SQL 자동 생성
-- ✅ Best Practice 기반 자동 성능 최적화
+### 🤔 해결하는 문제
 
-🚀 우리는 SQL을 더 쉽게, 더 빠르게, 더 효율적으로 만들 것입니다.
+새로운 데이터팀 구성원들이 자주 직면하는 문제들:
+- 🤯 "테이블이 너무 많아! 어디서부터 시작하지?"
+- 🧐 "이 JOIN이 맞나요?"
+- 🐌 "이 쿼리 성능이 괜찮을까요?"
+- 😰 "어떻게 의미있는 인사이트를 추출하지?"
 
-🌍 그리고, 우리는 오픈소스라는 무한한 가능성의 바다로 항해합니다.
+**Lang2SQL은 다음을 제공하여 이를 해결합니다:**
+- ✅ 자연어 입력 → 테이블 추천
+- ✅ 적절한 컬럼 조합으로 자동 SQL 생성
+- ✅ 모범 사례 기반 성능 최적화
 
-## 🌟 프로젝트 목표 (Project Vision)
-### _"박치기공룡들의 배포부터 시작하는 프로젝트"_
-#### [lang2sql](https://pypi.org/project/lang2sql/) 패키지 1.0.0 달성하기
-- 더 이상 실험적인(beta, alpha) 상태가 아니며, 정식 릴리스(Stable Release)임을 뜻합니다.
-#### LangGraph 기반 쿼리 생성: 단순한 SQL 생성이 아닌, 최적화된 SQL 제공을 목표로 합니다.
-- 자연어(NL) 입력을 기반으로 의미론적으로 최적화된 SQL 생성
-- 사내 Best Practice SQL을 통한 성능 향상
-#### 오픈소스 협업: 더 많은 사람들이 참여할 수 있도록, 코드와 아이디어를 GitHub으로 공유합니다.
-- 이 오픈소스 프로젝트는 전세계 개발자들과 함께 협업하는것을 목표로 합니다.
+---
 
-## 🧑 역동적인 팀 소개 (Dynamic Team)
+## 📦 설치 방법
 
-| 역할          | 이름 |  기술 스택 배지                                                                 | 주요 관심 분야                          |
-|---------------|------|-----------------------------------------------------------------------|----------------------------------------|
-| **Project Manager** | 이동욱 | ![Python](https://img.shields.io/badge/Python-Expert-3776AB)  | LLM 오픈소스 인과추론             |
-| **AI Engineer** | 문찬국 | ![Python](https://img.shields.io/badge/Python-Expert-3776AB) | LLM AgenticRAG 오픈소스 |
-| **Data Analytics Engineer** | 박경태 | ![Python](https://img.shields.io/badge/Python-Expert-3776AB)  | LLM 기반 엔지니어링             |
-| **AI Engineer** | 손봉균 | ![Python](https://img.shields.io/badge/Python-Expert-3776AB)  | LLM RAG AI기획 인과추론             |
-| **Data Scientist** | 안재일 | ![Python](https://img.shields.io/badge/Python-Intermediate-FF6C37)  | LLM 데이터분석 RAG             |
-| **ML Engineer** | 이호민 | ![Python](https://img.shields.io/badge/Python-Expert-3776AB)  | 멀티 에이전트 시스템             |
-| **AI Engineer** | 최세영 | ![Python](https://img.shields.io/badge/Python-Expert-3776AB)  | LLM RAG 오픈소스 멀티 에이전트            |
-| **Full-Stack Developer** | 황윤진 | ![NextJs](https://img.shields.io/badge/NextJs-Expert-3776AB) ![React](https://img.shields.io/badge/React-Expert-3776AB) | LLM 오케스트레이션 |
+### 빠른 설치
 
-
-
-
-## 🚀 프로젝트 로드맵 (Project Roadmap)
-```mermaid
-gantt
-    title 2025 프로젝트 여정
-    
-    section 프로젝트 준비
-    OT - 프로젝트 이해도 Sync-Up / Issue 하나 생성하기  :a1, 2025-03-03, 7d
-
-    section Table Retrieval 최적화
-    Table Retrieval 최적화 (1)  :a2, 2025-03-10, 7d
-    Table Retrieval 최적화 (2)  :a3, 2025-03-17, 7d
-    
-    section 휴식 및 리프레시
-    Magical Week 휴식 (1)       :break1, 2025-03-24, 7d
-
-    section SQL Generation
-    SQL Generation (1)         :a4, 2025-03-31, 7d
-    SQL Generation (2)         :a5, 2025-04-07, 7d
-
-    section SQL Optimization
-    SQL Optimization           :a6, 2025-04-14, 7d
-
-    section 중간 점검 및 조정
-    중간점검                   :a7, 2025-04-21, 7d
-
-    section 휴식 및 리프레시
-    Magical Week 휴식 (2)       :break2, 2025-04-28, 7d
-
-    section Dockerization
-    Dockerize (1)              :a8, 2025-05-05, 7d
-    Dockerize (2)              :a9, 2025-05-12, 7d
-
-    section 오픈소스화
-    오픈소스화 작업 (1)        :a10, 2025-05-19, 7d
-    오픈소스화 작업 (2)        :a11, 2025-05-26, 7d
+```bash
+pip install lang2sql
 ```
 
+### 소스에서 설치
 
-## 🛠️ 우리의 개발 문화 (Our Development Culture)
-**우리의 개발 문화**  
-```python
-class CollaborationFramework:
-    def __init__(self):
-        self.tools = {
-            'communication': 'Discord',
-            'version_control': 'GitHub Projects',
-            'ci/cd': 'GitHub Actions',
-            'docs': 'Github Wiki'
-        }
-    
-    def workflow(self):
-        return """주간 사이클:
-        1️⃣ 월요일: 코드 리뷰 세션 & 주간목표 설정 (Live Share)
-        3️⃣ 금요일: 진행상황 체크 (logging)
+```bash
+git clone https://github.com/CausalInferenceLab/lang2sql.git
+cd lang2sql
+pip install -r requirements.txt
+python setup.py install
 ```
 
+---
 
-## 📈 성과 지표 (Achievement Metrics)
-**2025 주요 KPI**  
-| 지표                     | 목표치 | 현재 달성률 |
-|--------------------------|--------|-------------|
-| 커밋 수                  | 100  | 0%         |
-| 배포 버전 1.0.0 달성              | 1.0.0    | 16%         | 
+## 🛠️ 사용법
 
+### 명령줄 인터페이스
 
-## 💻 주차별 활동 (Activity History)
+Streamlit 웹 인터페이스 실행:
 
-| 날짜 | 내용 | 발표자 | 
-| -------- | -------- | ---- |
-| 2025/03/03 | OT - 프로젝트 이해도 Sync-Up / Issue 하나 생성하기      | 이동욱 |
-| 2025/03/10 | 🔍 Table Retrieval 최적화 🔍 | 미정 |
-| 2025/03/17 | 🔍 Table Retrieval 최적화 🔍 | 미정 |
-| 2025/03/24 | ✨ Magical Week 휴식 ✨| 미정 |
-| 2025/03/29 | ✨ 인과추론팀 행사 참여 ✨| 미정 |
-| 2025/03/31 | ✏️ SQL Generation ✏️ | 미정 |
-| 2025/04/07 | ✏️ SQL Generation ✏️ | 미정 |
-| 2025/04/14 | ⚡ SQL Optimization ⚡ | 미정 |
-| 2025/04/21 | ✨ 중간점검 ✨ | 미정 |
-| 2025/04/28 | ✨ Magical Week 휴식 ✨ | 미정 |
-| 2025/05/05 | 🛠️ Dockerize 🛠️ | 미정 |
-| 2025/05/12 | 🛠️ Dockerize 🛠️ | 미정 |
-| 2025/05/19 | 📖 오픈소스화 작업 📖 | 미정 |
-| 2025/05/26 | 📖 오픈소스화 작업 📖 | 미정 |
+```bash
+lang2sql run-streamlit
+```
 
-_"본 계획표는 예시이며, 프로젝트의 방향성을 유지하면서 자유롭게 기여하는 것을 목표로 합니다."_
+사용자 정의 포트 및 DataHub 서버와 함께:
 
-## 💡 학습 자원 (Learning Resources)
+```bash
+lang2sql --datahub_server http://your-datahub-server:8080 run-streamlit -p 8888
+```
+
+### 환경 설정
+
+- 현재는 pip 패키지 설치로 프로젝트 시작이 어려운 상황입니다.
+- `.env` 파일을 생성하여 설정 관리 (.env.example 참고)
+
+---
+
+## 🏗️ 아키텍처
+
+Lang2SQL은 LangGraph를 사용한 다단계 접근 방식을 따릅니다:
+
+1. **📝 자연어 처리**: 사용자 의도 파싱 및 핵심 엔티티 추출
+2. **🔍 테이블 검색**: 의미론적 유사성을 사용한 관련 테이블 찾기 (Vector Search)
+3. **⚙️ SQL 생성**: 최적화된 SQL 쿼리 생성
+4. **🚀 쿼리 시각화**: 쿼리 결과를 시각화 합니다.
+
+---
+
+## 🧑‍💻 기술 스택
+
+- **[LangGraph](https://github.com/langchain-ai/langgraph)**: LLM 워크플로우 오케스트레이션
+- **[DataHub](https://datahubproject.io/)**: 메타데이터 관리 및 활용
+- **[Streamlit](https://streamlit.io/)**: 대화형 웹 인터페이스
+
+---
+
+## 🌟 기여가 필요한 영역 (Help!)
+
+### Containerization
+
+- Docker를 활용하여 프로젝트를 컨테이너화하고, `pip install lang2sql` 설치 후 단일 명령어로 실행 가능하도록 개선합니다.
+- CI/CD 파이프라인 구축 및 자동화된 테스트 환경 구성까지 확장할 수 있는 작업입니다.
+
+### Agentic 아키텍처 개발
+
+- 쿼리 생성 과정을 에이전틱하게 개선하여 더욱 지능적이고 자율적인 SQL 생성이 가능하도록 개발합니다.
+- 데이터 디스커버리 기능을 강화하여 사용자가 원하는 데이터를 더 효과적으로 찾을 수 있도록 지원합니다.
+
+### Datahub 통합 강화
+
+- 현재 Datahub의 Glossary와 쿼리 예시를 코드로 조회하는 기능이 구현되어 있습니다.
+- 이러한 메타데이터를 쿼리 생성 과정에 더욱 긴밀하게 통합하여 컨텍스트 기반의 정확한 SQL 생성을 지원하는 작업입니다.
+
+### VectorDB 유연성 개선
+
+- 현재는 Datahub를 통해 로컬에 FAISS VectorDB를 생성해야만 사용 가능한 구조입니다.
+- 이 결합도를 낮춰서 Datahub 없이도 기존에 준비된 VectorDB만 있으면 바로 활용할 수 있도록 아키텍처를 개선하는 작업입니다.
+
+### 출력 포맷 강화
+
+- 현재 Streamlit을 통한 웹 인터페이스만 지원하고 있습니다.
+- CLI, JSON 등 다양한 출력 포맷을 지원하여 사용자가 선호하는 환경에서 유연하게 활용할 수 있도록 개선합니다.
+
+### 모니터링 / 로깅 강화
+
+- 프로젝트 사용 패턴과 성능을 모니터링하고, 상세한 로깅 시스템을 구축합니다.
+- 사용자 피드백 수집 및 분석 프로세스를 통해 지속적인 개선이 가능한 기반을 마련하는 작업입니다.
+
+### 문서화 강화
+
+- 프로젝트 기여 장벽을 낮추기 위한 포괄적인 문서화 작업입니다.
+- 개발자 가이드, 튜토리얼 등을 체계적으로 정리하여 새로운 기여자들이 쉽게 참여할 수 있는 환경을 조성합니다.
+
+---
+
+## 🤝 기여하기
+
+커뮤니티의 기여를 환영합니다! 여러분이 도울 수 있는 방법들:
+
+### 🔧 개발 환경 설정
+
+1. 저장소 포크하기
+2. 포크 클론: `git clone https://github.com/YOUR_USERNAME/lang2sql.git`
+3. 의존성 설치: `pip install -r requirements.txt`
+4. 기능 브랜치 생성: `git checkout -b feature/amazing-feature`
+5. 변경사항 커밋: `git commit -m 'Add amazing feature'`
+6. 브랜치에 푸시: `git push origin feature/amazing-feature`
+7. Pull Request 열기
+
+### 🐛 이슈 신고
+
+버그를 발견했거나 기능 요청이 있으신가요? 다음 정보와 함께 [이슈를 열어주세요](https://github.com/CausalInferenceLab/lang2sql/issues):
+- 문제/기능에 대한 명확한 설명
+- 재현 단계 (버그의 경우)
+- 예상 동작 vs 실제 동작
+- 환경 세부사항
+
+### 📋 개발 가이드라인
+
+- pre-commit 활성화
+- 새로운 기능에 대한 테스트 작성
+- 필요시 문서 업데이트
+- 원자적이고 잘 설명된 커밋 유지
+
+---
+
+## 🎓 학습 자료
 
 - [모두를 위한 게임 데이터 검색 시스템 / if(kakaoAI)2024](https://www.youtube.com/watch?v=8-GerpWVMis&ab_channel=kakaotech)
-- [AI 데이터 분석가 ‘물어보새’ 등장 – 1부. RAG와 Text-To-SQL 활용](https://techblog.woowahan.com/18144/)
+- [AI 데이터 분석가 '물어보새' 등장 – 1부. RAG와 Text-To-SQL 활용](https://techblog.woowahan.com/18144/)
 - [테디노트 LangGraph](https://wikidocs.net/233785)
-- [DataHub 설명](https://datahubproject.io/)
-- [vanna.ai](https://github.com/vanna-ai/vanna)
+- [DataHub 문서](https://datahubproject.io/)
+- [Vanna.ai](https://github.com/vanna-ai/vanna)
 
-## 🌱 참여 안내 (How to Engage)
+---
 
-### 🎯 우리가 함께 얻어갈 점 (What We’ll Gain)
-_"이 스터디에 참여하면서, 여러분이 얻어갈 수 있는 것은 단순한 코드 경험 그 이상입니다."_
+## 🏆 Our Team
 
-- 🔥 오픈소스 기여 경험 – GitHub에서 이슈 관리, PR 작성, 리뷰 등 협업을 경험합니다.
-- 🔥 배포 경험 (PyPI & 오픈소스 배포) – lang2sql 패키지를 개발하며 직접 PyPI 패키지를 배포하는 경험을 가질 수 있습니다.
-- 🔥 실무 적용 – 본 프로젝트는 완성도를 높여 실무 환경에 적용 예정입니다. ${\textsf{\color{YellowOrange}사이드 프로젝트로 머물지 않습니다.}}$
+| Role | Name | Skills | Interests |
+|------|------|--------|-----------|
+| **Project Manager** | 이동욱 | ![Python](https://img.shields.io/badge/Python-Expert-3776AB) | LLM, Open Source, Causal Inference |
+| **AI Engineer** | 문찬국 | ![Python](https://img.shields.io/badge/Python-Expert-3776AB) | LLM, Agentic RAG, Open Source |
+| **Data Analytics Engineer** | 박경태 | ![Python](https://img.shields.io/badge/Python-Expert-3776AB) | LLM-based Engineering |
+| **AI Engineer** | 손봉균 | ![Python](https://img.shields.io/badge/Python-Expert-3776AB) | LLM, RAG, AI Planning |
+| **Data Scientist** | 안재일 | ![Python](https://img.shields.io/badge/Python-Intermediate-FF6C37) | LLM, Data Analysis, RAG |
+| **ML Engineer** | 이호민 | ![Python](https://img.shields.io/badge/Python-Expert-3776AB) | Multi-Agent Systems |
+| **AI Engineer** | 최세영 | ![Python](https://img.shields.io/badge/Python-Expert-3776AB) | LLM, RAG, Multi-Agent |
+| **Full-Stack Developer** | 황윤진 | ![NextJs](https://img.shields.io/badge/NextJs-Expert-3776AB) ![React](https://img.shields.io/badge/React-Expert-3776AB) | LLM Orchestration |
 
-### 🔍 원하는 팀원 (Who We're Looking For)
-_"함께 성장하고, 오픈소스 문화를 즐길 수 있는 팀원을 찾고 있습니다!"_
+---
 
-- **✅ 3개월 동안 꾸준히 참여할 수 있는 의지를 가지신 분**
-- ✅ 오픈소스 협업에 관심이 있으신분
-- ✅ 최소 주 1회 의미있는 프로젝트 기여 가능하신분 (Issue 생성, 코드기여, 문서화 등등)
+## 🚀 배포 및 릴리스
 
-### 🤗 비고
+### 수동 빌드
 
-**팀원으로 참여하시려면 러너 모집 기간에 신청해주세요.**  
-- 링크 (준비중)
+```bash
+python setup.py sdist bdist_wheel
+twine upload dist/*
+```
 
-**누구나 청강을 통해 모임을 참여하실 수 있습니다.**  
-1. 특별한 신청 없이 정기 모임 시간에 맞추어 디스코드 #Room-AN 채널로 입장
-2. Magical Week 중 행사에 참가
-3. Pseudo Lab 행사에서 만나기
+### 자동 릴리스
 
-## Acknowledgement 🙏
+`v*` 형식의 태그를 푸시하여 자동 PyPI 배포 트리거:
 
-Lang2SQL is developed as part of Pseudo-Lab's Open Research Initiative. Special thanks to our contributors and the open source community for their valuable insights and contributions.
+```bash
+git tag v1.0.0
+git push origin v1.0.0
+```
 
-## About Pseudo Lab 👋🏼</h2>
+**참고**: GitHub Secrets에 `PYPI_API_TOKEN` 설정 필요.
 
-[Pseudo-Lab](https://pseudo-lab.com/) is a non-profit organization focused on advancing machine learning and AI technologies. Our core values of Sharing, Motivation, and Collaborative Joy drive us to create impactful open-source projects. With over 5k+ researchers, we are committed to advancing machine learning and AI technologies.
+---
 
-<h2>Contributors 😃</h2>
+## 🙏 감사의 말
+
+Lang2SQL은 **가짜연구소의 인과추론팀**에서 개발중인 프로젝트입니다.
+
+---
+
+## 📄 라이선스
+
+- This project is licensed under the [MIT License](https://opensource.org/licenses/MIT).
+
+---
+
+## 🌍 가짜연구소 소개
+
+[가짜연구소](https://pseudo-lab.com/)는 머신러닝과 AI 기술 발전에 중점을 둔 비영리 조직입니다. **공유, 동기부여, 그리고 협업의 기쁨**이라는 핵심 가치를 바탕으로 영향력 있는 오픈소스 프로젝트를 만들어갑니다.
+
+전 세계 5,000명 이상의 연구자들과 함께, 우리는 AI 지식의 민주화와 열린 협업을 통한 혁신 촉진에 전념하고 있습니다.
+
+**우리 커뮤니티에 참여하세요:**
+- 💬 [Discord](https://discord.gg/EPurkHVtp2)
+
+---
+
+## 🎯 기여자들
+
 <a href="https://github.com/CausalInferenceLab/lang2sql/graphs/contributors">
   <img src="https://contrib.rocks/image?repo=CausalInferenceLab/lang2sql" />
 </a>
-<br><br>
 
-<h2>License 🗞</h2>
+---
 
-This project is licensed under the [MIT License](https://opensource.org/licenses/MIT).
+<div align="center">
+  <p><strong>⭐ 이 저장소가 도움이 되셨다면 스타를 눌러주세요!</strong></p>
+  <p><em>"우리는 함께 코드와 아이디어를 나누며 더 나은 데이터 환경을 만들기 위한 오픈소스 여정을 떠납니다. 🌍💡"</em></p>
+</div>

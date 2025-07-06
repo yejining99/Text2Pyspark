@@ -1,18 +1,31 @@
 """
-Datahub GMS 서버 URL을 설정하고, 필요 시 Streamlit 인터페이스를 실행하는 CLI 프로그램입니다.
+Lang2SQL CLI 프로그램입니다.
+이 프로그램은 Datahub GMS 서버 URL을 설정하고, 필요 시 Streamlit 인터페이스를 실행합니다.
+
+명령어 예시: lang2sql --datahub_server http://localhost:8080 --run-streamlit
 """
 
 import os
+import logging
 import subprocess
 
 import click
 import dotenv
 
+from llm_utils.check_server import CheckServer
 from llm_utils.tools import set_gms_server
+from version import __version__
+
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s [%(levelname)s] %(message)s",
+    datefmt="%Y-%m-%d %H:%M:%S",
+)
+logger = logging.getLogger(__name__)
 
 
 @click.group()
-@click.version_option(version="0.1.4")
+@click.version_option(version=__version__)
 @click.pass_context
 @click.option(
     "--datahub_server",
@@ -104,11 +117,20 @@ def cli(
             click.secho(f"프롬프트 디렉토리 환경변수 설정 실패: {str(e)}", fg="red")
             ctx.exit(1)
 
-    try:
+    logger.info(
+        "Initialization started: GMS server = %s, run_streamlit = %s, port = %d",
+        datahub_server,
+        run_streamlit,
+        port,
+    )
+
+    if CheckServer.is_gms_server_healthy(url=datahub_server):
         set_gms_server(datahub_server)
-    except ValueError as e:
-        click.secho(f"GMS 서버 URL 설정 실패: {str(e)}", fg="red")
+        logger.info("GMS server URL successfully set: %s", datahub_server)
+    else:
+        logger.error("GMS server health check failed. URL: %s", datahub_server)
         ctx.exit(1)
+
     if run_streamlit:
         run_streamlit_command(port)
 
@@ -129,6 +151,8 @@ def run_streamlit_command(port: int) -> None:
         - subprocess 호출 실패 시 예외가 발생할 수 있습니다.
     """
 
+    logger.info("Starting Streamlit application on port %d...", port)
+
     try:
         subprocess.run(
             [
@@ -140,8 +164,9 @@ def run_streamlit_command(port: int) -> None:
             ],
             check=True,
         )
+        logger.info("Streamlit application started successfully.")
     except subprocess.CalledProcessError as e:
-        click.echo(f"Streamlit 실행 실패: {e}")
+        logger.error("Failed to start Streamlit application: %s", e)
         raise
 
 
@@ -172,4 +197,93 @@ def run_streamlit_cli_command(port: int) -> None:
         - Streamlit 실행에 실패할 경우 subprocess 호출에서 예외가 발생할 수 있습니다.
     """
 
+    logger.info("Executing 'run-streamlit' command on port %d...", port)
     run_streamlit_command(port)
+
+
+@cli.command(name="query")
+@click.argument("question", type=str)
+@click.option(
+    "--database-env",
+    default="clickhouse",
+    help="사용할 데이터베이스 환경 (기본값: clickhouse)",
+)
+@click.option(
+    "--retriever-name",
+    default="기본",
+    help="테이블 검색기 이름 (기본값: 기본)",
+)
+@click.option(
+    "--top-n",
+    type=int,
+    default=5,
+    help="검색된 상위 테이블 수 제한 (기본값: 5)",
+)
+@click.option(
+    "--device",
+    default="cpu",
+    help="LLM 실행에 사용할 디바이스 (기본값: cpu)",
+)
+@click.option(
+    "--use-enriched-graph",
+    is_flag=True,
+    help="확장된 그래프(프로파일 추출 + 컨텍스트 보강) 사용 여부",
+)
+def query_command(
+    question: str,
+    database_env: str,
+    retriever_name: str,
+    top_n: int,
+    device: str,
+    use_enriched_graph: bool,
+) -> None:
+    """
+    자연어 질문을 SQL 쿼리로 변환하여 출력하는 명령어입니다.
+
+    이 명령은 사용자가 입력한 자연어 질문을 받아서 SQL 쿼리로 변환하고,
+    생성된 SQL 쿼리만을 표준 출력으로 출력합니다.
+
+    매개변수:
+        question (str): SQL로 변환할 자연어 질문
+        database_env (str): 사용할 데이터베이스 환경
+        retriever_name (str): 테이블 검색기 이름
+        top_n (int): 검색된 상위 테이블 수 제한
+        device (str): LLM 실행에 사용할 디바이스
+        use_enriched_graph (bool): 확장된 그래프 사용 여부
+
+    예시:
+        lang2sql query "고객 데이터를 기반으로 유니크한 유저 수를 카운트하는 쿼리"
+        lang2sql query "고객 데이터를 기반으로 유니크한 유저 수를 카운트하는 쿼리" --use-enriched-graph
+    """
+
+    try:
+        from llm_utils.query_executor import execute_query, extract_sql_from_result
+
+        # 공용 함수를 사용하여 쿼리 실행
+        res = execute_query(
+            query=question,
+            database_env=database_env,
+            retriever_name=retriever_name,
+            top_n=top_n,
+            device=device,
+            use_enriched_graph=use_enriched_graph,
+        )
+
+        # SQL 추출 및 출력
+        sql = extract_sql_from_result(res)
+        if sql:
+            print(sql)
+        else:
+            # SQL 추출 실패 시 원본 쿼리 텍스트 출력
+            generated_query = res.get("generated_query")
+            if generated_query:
+                query_text = (
+                    generated_query.content
+                    if hasattr(generated_query, "content")
+                    else str(generated_query)
+                )
+                print(query_text)
+
+    except Exception as e:
+        logger.error("쿼리 처리 중 오류 발생: %s", e)
+        raise
