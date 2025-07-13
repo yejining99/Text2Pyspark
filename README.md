@@ -106,6 +106,7 @@ lang2sql query "고객 데이터를 기반으로 유니크한 유저 수를 카�
 
 # pgvector 사용
 lang2sql query "고객 데이터를 기반으로 유니크한 유저 수를 카운트하는 쿼리" --vectordb-type pgvector --vectordb-location "postgresql://postgres:postgres@localhost:5432/postgres"
+```
 
 ### 환경 설정
 
