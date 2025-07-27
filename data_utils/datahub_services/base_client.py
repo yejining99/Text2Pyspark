@@ -11,11 +11,11 @@ from datahub.ingestion.graph.client import DatahubClientConfig, DataHubGraph
 
 class DataHubBaseClient:
     """DataHub 기본 클라이언트 클래스"""
-    
+
     def __init__(self, gms_server="http://localhost:8080", extra_headers={}):
         """
         DataHub 클라이언트 초기화
-        
+
         Args:
             gms_server (str): DataHub GMS 서버 URL
             extra_headers (dict): 추가 HTTP 헤더
@@ -26,7 +26,7 @@ class DataHubBaseClient:
 
         self.gms_server = gms_server
         self.extra_headers = extra_headers
-        
+
         # DataHub 클라이언트 초기화
         self.emitter = DatahubRestEmitter(
             gms_server=gms_server, extra_headers=extra_headers
@@ -36,10 +36,10 @@ class DataHubBaseClient:
     def _is_valid_gms_server(self, gms_server):
         """
         GMS 서버 주소의 유효성을 검사하는 함수
-        
+
         Args:
             gms_server (str): 검사할 GMS 서버 URL
-            
+
         Returns:
             bool: 서버가 유효한 경우 True
         """
@@ -57,26 +57,26 @@ class DataHubBaseClient:
     def execute_graphql_query(self, query, variables=None):
         """
         GraphQL 쿼리 실행
-        
+
         Args:
             query (str): GraphQL 쿼리 문자열
             variables (dict, optional): 쿼리 변수
-            
+
         Returns:
             dict: GraphQL 응답
         """
         headers = {"Content-Type": "application/json"}
         payload = {"query": query}
-        
+
         if variables:
             payload["variables"] = variables
-            
+
         response = requests.post(
             f"{self.gms_server}/api/graphql",
             json=payload,
             headers=headers,
         )
-        
+
         if response.status_code == 200:
             return response.json()
         else:

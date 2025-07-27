@@ -13,11 +13,11 @@ from data_utils.datahub_services.base_client import DataHubBaseClient
 
 class QueryService:
     """쿼리 관련 서비스 클래스"""
-    
+
     def __init__(self, client: DataHubBaseClient):
         """
         쿼리 서비스 초기화
-        
+
         Args:
             client (DataHubBaseClient): DataHub 기본 클라이언트
         """
@@ -107,7 +107,7 @@ class QueryService:
     def get_queries_by_urn(self, dataset_urn):
         """
         특정 데이터셋 URN과 연관된 쿼리들을 조회하는 함수
-        
+
         전체 쿼리를 가져온 후 클라이언트 사이드에서 필터링하는 방식 사용
 
         Args:
@@ -117,31 +117,31 @@ class QueryService:
             dict: 연관된 쿼리 목록
         """
         # 먼저 전체 쿼리 목록을 가져옴
-        input_params = {
-            "start": 0,
-            "count": 1000,  # 충분히 큰 수로 설정
-            "query": "*"
-        }
+        input_params = {"start": 0, "count": 1000, "query": "*"}  # 충분히 큰 수로 설정
 
         variables = {"input": input_params}
         result = self.client.execute_graphql_query(QUERIES_BY_URN_QUERY, variables)
 
-        if "error" not in result and "data" in result and "listQueries" in result["data"]:
+        if (
+            "error" not in result
+            and "data" in result
+            and "listQueries" in result["data"]
+        ):
             # 클라이언트 사이드에서 특정 URN과 연관된 쿼리만 필터링
             all_queries = result["data"]["listQueries"]["queries"]
             filtered_queries = []
-            
+
             for query in all_queries:
                 subjects = query.get("subjects", [])
                 for subject in subjects:
                     if subject.get("dataset", {}).get("urn") == dataset_urn:
                         filtered_queries.append(query)
                         break
-            
+
             # 필터링된 결과로 응답 구조 재구성
             result["data"]["listQueries"]["queries"] = filtered_queries
             result["data"]["listQueries"]["count"] = len(filtered_queries)
-            
+
         return result
 
     def get_glossary_terms_by_urn(self, dataset_urn):
@@ -155,6 +155,6 @@ class QueryService:
             dict: glossary terms 정보
         """
         from data_utils.queries import GLOSSARY_TERMS_BY_URN_QUERY
-        
+
         variables = {"urn": dataset_urn}
         return self.client.execute_graphql_query(GLOSSARY_TERMS_BY_URN_QUERY, variables)

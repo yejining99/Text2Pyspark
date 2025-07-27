@@ -14,11 +14,11 @@ from data_utils.datahub_services.base_client import DataHubBaseClient
 
 class GlossaryService:
     """용어집 관련 서비스 클래스"""
-    
+
     def __init__(self, client: DataHubBaseClient):
         """
         용어집 서비스 초기화
-        
+
         Args:
             client (DataHubBaseClient): DataHub 기본 클라이언트
         """
