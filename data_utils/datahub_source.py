@@ -8,6 +8,8 @@ from data_utils.queries import (
     ROOT_GLOSSARY_NODES_QUERY,
     GLOSSARY_NODE_QUERY,
     LIST_QUERIES_QUERY,
+    QUERIES_BY_URN_QUERY,
+    GLOSSARY_TERMS_BY_URN_QUERY,
 )
 
 
@@ -587,3 +589,174 @@ class DatahubMetadataFetcher:
                 return {"error": True, "message": f"결과 구조 파싱 중 오류 발생: {e}"}
         else:
             return {"error": True, "message": "쿼리 목록을 가져오지 못했습니다."}
+
+    def get_urn_info(self, urn):
+        """
+        특정 URN에 대한 모든 관련 정보를 가져오는 함수
+
+        Args:
+            urn (str): 조회할 데이터셋 URN
+
+        Returns:
+            dict: URN에 대한 전체 메타데이터 정보
+        """
+        print(f"\n=== URN 정보 조회: {urn} ===\n")
+
+        try:
+            # 기본 테이블 메타데이터 가져오기
+            metadata = self.build_table_metadata(urn)
+
+            # 결과 출력
+            self._print_urn_details(metadata)
+
+            return metadata
+
+        except Exception as e:
+            error_msg = f"URN 정보 조회 중 오류 발생: {str(e)}"
+            print(error_msg)
+            return {"error": True, "message": error_msg}
+
+    def _print_urn_details(self, metadata):
+        """URN 메타데이터를 보기 좋게 출력하는 내부 함수"""
+
+        # 테이블 기본 정보
+        print("📋 테이블 정보:")
+        print(f"  이름: {metadata.get('table_name', 'N/A')}")
+        print(f"  설명: {metadata.get('description', 'N/A')}\n")
+
+        # 컬럼 정보
+        columns = metadata.get("columns", [])
+        if columns:
+            print(f"📊 컬럼 정보 ({len(columns)}개):")
+            for i, col in enumerate(columns, 1):
+                print(f"  {i}. {col['column_name']} ({col.get('column_type', 'N/A')})")
+                if col.get("column_description"):
+                    print(f"     → {col['column_description']}")
+            print()
+
+        # 리니지 정보
+        lineage = metadata.get("lineage", {})
+
+        # Downstream 테이블
+        downstream = lineage.get("downstream", [])
+        if downstream:
+            print(f"⬇️ Downstream 테이블 ({len(downstream)}개):")
+            for table in downstream:
+                print(f"  - {table['table']} (degree: {table['degree']})")
+            print()
+
+        # Upstream 테이블
+        upstream = lineage.get("upstream", [])
+        if upstream:
+            print(f"⬆️ Upstream 테이블 ({len(upstream)}개):")
+            for table in upstream:
+                print(f"  - {table['table']} (degree: {table['degree']})")
+            print()
+
+        # 컬럼 레벨 리니지
+        upstream_columns = lineage.get("upstream_columns", [])
+        if upstream_columns:
+            print("🔗 컬럼 레벨 리니지:")
+            for upstream_dataset in upstream_columns:
+                dataset_name = upstream_dataset["upstream_dataset"]
+                columns = upstream_dataset["columns"]
+                print(f"  📋 {dataset_name}:")
+                for col in columns:
+                    confidence = col.get("confidence", 1.0)
+                    print(
+                        f"    {col['upstream_column']} → {col['downstream_column']} (신뢰도: {confidence})"
+                    )
+            print()
+
+    def get_queries_by_urn(self, dataset_urn):
+        """
+        특정 데이터셋 URN과 연관된 쿼리들을 조회하는 함수
+
+        전체 쿼리를 가져온 후 클라이언트 사이드에서 필터링하는 방식 사용
+
+        Args:
+            dataset_urn (str): 데이터셋 URN
+
+        Returns:
+            dict: 연관된 쿼리 목록
+        """
+        # 먼저 전체 쿼리 목록을 가져옴
+        input_params = {"start": 0, "count": 1000, "query": "*"}  # 충분히 큰 수로 설정
+
+        variables = {"input": input_params}
+
+        headers = {"Content-Type": "application/json"}
+        response = requests.post(
+            f"{self.gms_server}/api/graphql",
+            json={"query": QUERIES_BY_URN_QUERY, "variables": variables},
+            headers=headers,
+        )
+
+        if response.status_code == 200:
+            result = response.json()
+            if "data" in result and "listQueries" in result["data"]:
+                # 클라이언트 사이드에서 특정 URN과 연관된 쿼리만 필터링
+                all_queries = result["data"]["listQueries"]["queries"]
+                filtered_queries = []
+
+                for query in all_queries:
+                    subjects = query.get("subjects", [])
+                    for subject in subjects:
+                        if subject.get("dataset", {}).get("urn") == dataset_urn:
+                            filtered_queries.append(query)
+                            break
+
+                # 필터링된 결과로 응답 구조 재구성
+                result["data"]["listQueries"]["queries"] = filtered_queries
+                result["data"]["listQueries"]["count"] = len(filtered_queries)
+
+            return result
+        else:
+            return {
+                "error": True,
+                "status_code": response.status_code,
+                "message": response.text,
+            }
+
+    def get_glossary_terms_by_urn(self, dataset_urn):
+        """
+        특정 데이터셋 URN의 glossary terms를 조회하는 함수
+
+        Args:
+            dataset_urn (str): 데이터셋 URN
+
+        Returns:
+            dict: glossary terms 정보
+        """
+        variables = {"urn": dataset_urn}
+
+        headers = {"Content-Type": "application/json"}
+        response = requests.post(
+            f"{self.gms_server}/api/graphql",
+            json={"query": GLOSSARY_TERMS_BY_URN_QUERY, "variables": variables},
+            headers=headers,
+        )
+
+        if response.status_code == 200:
+            return response.json()
+        else:
+            return {
+                "error": True,
+                "status_code": response.status_code,
+                "message": response.text,
+            }
+
+
+if __name__ == "__main__":
+    fetcher = DatahubMetadataFetcher()
+
+    print(
+        fetcher.get_queries_by_urn(
+            "urn:li:dataset:(urn:li:dataPlatform:dbt,small_bank_1.small_bank_1.ACCOUNTS,PROD)"
+        )
+    )
+    print(
+        fetcher.get_glossary_terms_by_urn(
+            "urn:li:dataset:(urn:li:dataPlatform:dbt,small_bank_1.small_bank_1.ACCOUNTS,PROD)"
+        )
+    )
