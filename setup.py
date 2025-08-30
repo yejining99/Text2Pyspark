@@ -44,6 +44,7 @@ setup(
     long_description=long_description,
     long_description_content_type="text/markdown",
     packages=find_packages() + ["prompt"],
+    py_modules=["version"],
     include_package_data=False,
     package_data={
         "prompt": ["*.md"],
