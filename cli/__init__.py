@@ -195,6 +195,7 @@ def run_streamlit_command(port: int) -> None:
                 "streamlit",
                 "run",
                 "interface/streamlit_app.py",
+                "--server.address=0.0.0.0",
                 "--server.port",
                 str(port),
             ],
