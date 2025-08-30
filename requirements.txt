@@ -25,11 +25,10 @@ numpy<2.0
 pytest>=8.3.5
 snowflake-connector-python>=3.15.0,<4.0.0
 databricks-sql-connector>=4.0.3,<5.0.0
-mysql>=0.0.3,<0.0.4
 oracledb>=3.1.0,<4.0.0
 mysql-connector-python>=9.3.0,<10.0.0
 duckdb>=1.2.2,<2.0.0
-psycopg2>=2.9.10,<3.0.0
+psycopg2-binary<3.0.0,>=2.9.10
 pyodbc>=5.1.0,<6.0.0
 crate>=0.29.0,<1.0.0
 pyhive>=0.6.6,<1.0.0
