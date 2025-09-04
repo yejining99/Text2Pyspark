@@ -13,9 +13,9 @@ from langchain_core.messages import AIMessage
 
 from db_utils import get_db_connector
 from db_utils.base_connector import BaseConnector
-from llm_utils.connect_db import ConnectDB
-from llm_utils.display_chart import DisplayChart
-from llm_utils.query_executor import execute_query as execute_query_common
+from infra.db.connect_db import ConnectDB
+from viz.display_chart import DisplayChart
+from engine.query_executor import execute_query as execute_query_common
 from llm_utils.llm_response_parser import LLMResponseParser
 from llm_utils.token_utils import TokenUtils
 from llm_utils.graph_utils.enriched_graph import builder as enriched_builder

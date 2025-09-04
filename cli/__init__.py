@@ -12,7 +12,7 @@ import subprocess
 import click
 import dotenv
 
-from llm_utils.check_server import CheckServer
+from infra.monitoring.check_server import CheckServer
 from llm_utils.tools import set_gms_server
 from version import __version__
 
@@ -318,7 +318,7 @@ def query_command(
     """
 
     try:
-        from llm_utils.query_executor import execute_query, extract_sql_from_result
+        from engine.query_executor import execute_query, extract_sql_from_result
 
         # VectorDB 타입을 환경 변수로 설정
         os.environ["VECTORDB_TYPE"] = vectordb_type

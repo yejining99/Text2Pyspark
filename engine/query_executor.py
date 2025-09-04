@@ -121,3 +121,5 @@ def extract_sql_from_result(res: Dict[str, Any]) -> Optional[str]:
     except ValueError:
         logger.error("SQL을 추출할 수 없습니다.")
         return None
+
+

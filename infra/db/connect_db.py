@@ -118,3 +118,5 @@ class ConnectDB:
         except Exception as e:
             logger.exception("An error occurred while executing SQL: %s", e)
             raise
+
+
