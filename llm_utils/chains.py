@@ -6,7 +6,7 @@ from langchain_core.prompts import (
 )
 from pydantic import BaseModel, Field
 
-from .llm_factory import get_llm
+from llm_utils.llm import get_llm
 
 from prompt.template_loader import get_prompt_template
 

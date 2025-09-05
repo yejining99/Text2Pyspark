@@ -6,7 +6,7 @@ from langgraph.graph import END, StateGraph
 from langgraph.graph.message import add_messages
 from langchain.chains.sql_database.prompt import SQL_PROMPTS
 from pydantic import BaseModel, Field
-from llm_utils.llm_factory import get_llm
+from llm_utils.llm import get_llm
 
 from llm_utils.chains import (
     query_refiner_chain,
