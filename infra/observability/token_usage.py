@@ -1,5 +1,5 @@
 """
-token_utils.py
+token_usage.py
 
 LLM 응답 메시지에서 토큰 사용량을 집계하기 위한 유틸리티 모듈입니다.
 
@@ -29,7 +29,7 @@ class TokenUtils:
     활용할 수 있습니다.
 
     사용 예:
-        >>> from token_utils import TokenUtils
+        >>> from infra.observability.token_usage import TokenUtils
         >>> summary = TokenUtils.get_token_usage_summary(messages)
         >>> print(summary["total_tokens"])
 

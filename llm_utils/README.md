@@ -8,10 +8,10 @@ Lang2SQL 파이프라인에서 LLM, 검색(RAG), 그래프 워크플로우, DB �
 - (Moved) `viz/display_chart.py`: LLM 활용 Plotly 시각화 유틸.
 - (Moved) `infra/monitoring/check_server.py`: GMS 헬스체크.
 - (Moved) `infra/db/connect_db.py`: ClickHouse 연결/실행.
-- **`token_utils.py`**: LLM 메시지의 `usage_metadata` 합산 토큰 집계.
+- (Moved) `infra/observability/token_usage.py`: LLM 메시지의 `usage_metadata` 합산 토큰 집계.
 - **`llm_response_parser.py`**: LLM 응답에서 `<SQL>`, `<해석>` 블록 추출.
 - **`prompts_class.py`**: LangChain SQL 프롬프트를 로컬 YAML로 오버라이드.
-- **`utils.py`**: `profile_to_text(profile)` 등 소형 유틸.
+- (Moved) `graph_utils/profile_utils.py`: `profile_to_text(profile)` 등 그래프 관련 포맷 유틸.
 
 ### Depth 1: LLM/임베딩/검색
 

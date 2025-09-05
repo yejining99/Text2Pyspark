@@ -17,7 +17,7 @@ from infra.db.connect_db import ConnectDB
 from viz.display_chart import DisplayChart
 from engine.query_executor import execute_query as execute_query_common
 from llm_utils.llm_response_parser import LLMResponseParser
-from llm_utils.token_utils import TokenUtils
+from infra.observability.token_usage import TokenUtils
 from llm_utils.graph_utils.enriched_graph import builder as enriched_builder
 from llm_utils.graph_utils.basic_graph import builder
 from llm_utils.graph_utils.simplified_graph import builder as simplified_builder

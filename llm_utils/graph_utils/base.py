@@ -18,7 +18,7 @@ from llm_utils.chains import (
 
 from llm_utils.tools import get_info_from_db
 from llm_utils.retrieval import search_tables
-from llm_utils.utils import profile_to_text
+from llm_utils.graph_utils.profile_utils import profile_to_text
 
 # 노드 식별자 정의
 QUERY_REFINER = "query_refiner"
