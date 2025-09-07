@@ -11,7 +11,11 @@ PAGES = {
     "lang2sql": {
         "page": "lang2sql.py",
         "title": "Lang2SQL",
-    }
+    },
+    "graph_builder": {
+        "page": "graph_builder.py",
+        "title": "Graph Builder",
+    },
 }
 
 

@@ -98,6 +98,14 @@ def display_result(
     def should_show(_key: str) -> bool:
         return st.session_state.get(_key, True)
 
+    has_query = bool(res.get("generated_query"))
+    # 섹션 표시 여부를 QUERY_MAKER 출력 유무에 따라 제어
+    show_sql_section = has_query and should_show("show_sql")
+    show_result_desc = has_query and should_show("show_result_description")
+    show_reinterpreted = has_query and should_show("show_question_reinterpreted_by_ai")
+    show_table_section = has_query and should_show("show_table")
+    show_chart_section = has_query and should_show("show_chart")
+
     if should_show("show_token_usage"):
         st.markdown("---")
         token_summary = TokenUtils.get_token_usage_summary(data=res["messages"])
@@ -110,7 +118,7 @@ def display_result(
         """
         )
 
-    if should_show("show_sql"):
+    if show_sql_section:
         st.markdown("---")
         generated_query = res.get("generated_query")
         if generated_query:
@@ -138,7 +146,7 @@ def display_result(
                 st.warning("쿼리 텍스트가 문자열이 아닙니다.")
                 st.text(str(query_text))
 
-    if should_show("show_result_description"):
+    if show_result_desc:
         st.markdown("---")
         st.markdown("**결과 설명:**")
         result_message = res["messages"][-1].content
@@ -158,7 +166,7 @@ def display_result(
             st.warning("결과 메시지가 문자열이 아닙니다.")
             st.text(str(result_message))
 
-    if should_show("show_question_reinterpreted_by_ai"):
+    if show_reinterpreted:
         st.markdown("---")
         st.markdown("**AI가 재해석한 사용자 질문:**")
         try:
@@ -178,7 +186,11 @@ def display_result(
         st.markdown("**참고한 테이블 목록:**")
         st.write(res.get("searched_tables", []))
 
-    if should_show("show_table"):
+    # QUERY_MAKER가 비활성화된 경우 안내 메시지 출력
+    if not has_query:
+        st.info("QUERY_MAKER 없이 실행되었습니다. 검색된 테이블 정보만 표시합니다.")
+
+    if show_table_section:
         st.markdown("---")
         try:
             sql_raw = (
@@ -195,7 +207,7 @@ def display_result(
         except Exception as e:
             st.error(f"쿼리 실행 중 오류 발생: {e}")
 
-    if should_show("show_chart"):
+    if show_chart_section:
         st.markdown("---")
         try:
             sql_raw = (
