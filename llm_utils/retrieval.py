@@ -96,7 +96,6 @@ def search_tables(
                 col_name, col_desc = line.split(": ", 1)
                 columns[col_name.strip()] = col_desc.strip()
 
-
         # 딕셔너리 저장
         documents_dict[table_name] = {
             "table_description": table_desc.strip(),

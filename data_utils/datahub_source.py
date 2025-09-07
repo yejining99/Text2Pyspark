@@ -143,6 +143,3 @@ class DatahubMetadataFetcher:
     def _is_valid_gms_server(self, gms_server):
         """GMS 서버 주소의 유효성을 검사하는 함수 (하위 호환성)"""
         return self.client._is_valid_gms_server(gms_server)
-
-
- 

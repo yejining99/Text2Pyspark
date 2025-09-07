@@ -133,5 +133,3 @@ def get_metadata_from_db() -> List[Dict]:
         metadata.append(table_metadata)
 
     return metadata
-
-

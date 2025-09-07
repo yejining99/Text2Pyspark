@@ -31,5 +31,3 @@ __all__ = [
     "get_embeddings_ollama",
     "get_embeddings_huggingface",
 ]
-
-

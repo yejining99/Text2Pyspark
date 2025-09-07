@@ -171,9 +171,11 @@ def display_result(
         st.markdown("**AI가 재해석한 사용자 질문:**")
         try:
             if len(res["messages"]) > 1:
-                candidate = res["messages"][ -2 ]
+                candidate = res["messages"][-2]
                 question_text = (
-                    candidate.content if hasattr(candidate, "content") else str(candidate)
+                    candidate.content
+                    if hasattr(candidate, "content")
+                    else str(candidate)
                 )
             else:
                 question_text = res["messages"][0].content
@@ -221,9 +223,11 @@ def display_result(
                 st.markdown("**쿼리 결과 시각화:**")
                 try:
                     if len(res["messages"]) > 1:
-                        candidate = res["messages"][ -2 ]
+                        candidate = res["messages"][-2]
                         chart_question = (
-                            candidate.content if hasattr(candidate, "content") else str(candidate)
+                            candidate.content
+                            if hasattr(candidate, "content")
+                            else str(candidate)
                         )
                     else:
                         chart_question = res["messages"][0].content

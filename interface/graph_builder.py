@@ -26,7 +26,9 @@ from llm_utils.graph_utils.base import (
 )
 
 
-def build_selected_sequence(preset: str, use_profile: bool, use_context: bool) -> List[str]:
+def build_selected_sequence(
+    preset: str, use_profile: bool, use_context: bool
+) -> List[str]:
     """
     프리셋과 커스텀 토글에 따라 실행할 노드 시퀀스를 생성합니다.
 
@@ -110,9 +112,6 @@ def render_sequence(sequence: List[str]) -> str:
     return " → ".join(label_map[s] for s in sequence)
 
 
- 
-
-
 st.title("LangGraph 구성 UI")
 st.caption("기본/확장/커스텀으로 StateGraph를 구성하고 세션에 적용합니다.")
 
@@ -129,7 +128,10 @@ else:
     # 프리셋에서는 QUERY_MAKER 자동 포함
     use_query_maker = True
 
-def build_sequence_with_qm(preset: str, use_profile: bool, use_context: bool, use_qm: bool) -> List[str]:
+
+def build_sequence_with_qm(
+    preset: str, use_profile: bool, use_context: bool, use_qm: bool
+) -> List[str]:
     """
     QUERY_MAKER 포함 여부를 반영하여 시퀀스를 생성합니다.
 
@@ -152,13 +154,19 @@ def build_sequence_with_qm(preset: str, use_profile: bool, use_context: bool, us
     base_seq = build_selected_sequence(preset, use_profile, use_context)
     return base_seq
 
+
 sequence = build_sequence_with_qm(preset, use_profile, use_context, use_query_maker)
 
 st.subheader("실행 순서")
 st.write(render_sequence(sequence))
 
 st.subheader("그래프 생성")
-config = {"preset": preset, "use_profile": use_profile, "use_context": use_context, "use_query_maker": use_query_maker}
+config = {
+    "preset": preset,
+    "use_profile": use_profile,
+    "use_context": use_context,
+    "use_query_maker": use_query_maker,
+}
 
 # 선택이 바뀌면 자동으로 세션 그래프 갱신
 prev_config = st.session_state.get("graph_config")
@@ -177,4 +185,3 @@ if st.button("세션 그래프 새로고침"):
 
 with st.expander("현재 세션 그래프 설정"):
     st.json(st.session_state.get("graph_config", {}))
-

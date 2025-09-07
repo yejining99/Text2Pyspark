@@ -72,5 +72,3 @@ class CheckServer:
             logger.exception("Unexpected request error to GMS server: %s", health_url)
 
         return False
-
-

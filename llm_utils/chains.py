@@ -23,6 +23,7 @@ class QuestionProfile(BaseModel):
     has_temporal_comparison: bool = Field(description="기간 비교 포함 여부")
     intent_type: str = Field(description="질문의 주요 의도 유형")
 
+
 # QueryMakerChain
 def create_query_maker_chain(llm):
     prompt = get_prompt_template("query_maker_prompt")

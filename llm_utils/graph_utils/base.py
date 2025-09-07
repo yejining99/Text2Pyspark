@@ -4,7 +4,7 @@ import json
 from typing_extensions import TypedDict, Annotated
 from langgraph.graph import END, StateGraph
 from langgraph.graph.message import add_messages
- 
+
 
 from llm_utils.chains import (
     query_maker_chain,
@@ -61,7 +61,6 @@ def profile_extraction_node(state: QueryMakerState):
     state["question_profile"] = result
     print("profile_extraction_node : ", result)
     return state
-
 
 
 # 노드 함수: CONTEXT_ENRICHMENT 노드
@@ -139,12 +138,16 @@ def query_maker_node(state: QueryMakerState):
     parts = [state["messages"][0].content]
     if len(state["messages"]) > 1:
         last_msg = state["messages"][-1]
-        last_content = last_msg.content if hasattr(last_msg, "content") else str(last_msg)
+        last_content = (
+            last_msg.content if hasattr(last_msg, "content") else str(last_msg)
+        )
         if isinstance(last_content, str) and last_content.strip():
             parts.append(last_content)
 
     combined_input = "\n\n---\n\n".join(parts)
-    searched_tables_json = json.dumps(state["searched_tables"], ensure_ascii=False, indent=2)
+    searched_tables_json = json.dumps(
+        state["searched_tables"], ensure_ascii=False, indent=2
+    )
 
     res = query_maker_chain.invoke(
         input={
@@ -156,6 +159,3 @@ def query_maker_node(state: QueryMakerState):
     state["generated_query"] = res
     state["messages"].append(res)
     return state
-
-
- 

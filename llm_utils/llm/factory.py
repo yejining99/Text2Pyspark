@@ -179,5 +179,3 @@ def get_embeddings_huggingface() -> BaseLanguageModel:
         repo_id=os.getenv("HUGGING_FACE_EMBEDDING_REPO_ID"),
         huggingfacehub_api_token=os.getenv("HUGGING_FACE_EMBEDDING_API_TOKEN"),
     )
-
-

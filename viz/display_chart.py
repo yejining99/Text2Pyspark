@@ -123,5 +123,3 @@ class DisplayChart:
             fig.update_layout(template="plotly_dark")
 
         return fig
-
-

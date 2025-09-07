@@ -9,5 +9,3 @@ __all__ = [
     "get_info_from_db",
     "get_metadata_from_db",
 ]
-
-
