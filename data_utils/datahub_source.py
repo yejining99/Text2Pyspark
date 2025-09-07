@@ -145,17 +145,4 @@ class DatahubMetadataFetcher:
         return self.client._is_valid_gms_server(gms_server)
 
 
-if __name__ == "__main__":
-    # 기존 테스트 코드와 동일하게 유지
-    fetcher = DatahubMetadataFetcher()
-
-    print(
-        fetcher.get_queries_by_urn(
-            "urn:li:dataset:(urn:li:dataPlatform:dbt,small_bank_1.small_bank_1.ACCOUNTS,PROD)"
-        )
-    )
-    print(
-        fetcher.get_glossary_terms_by_urn(
-            "urn:li:dataset:(urn:li:dataPlatform:dbt,small_bank_1.small_bank_1.ACCOUNTS,PROD)"
-        )
-    )
+ 
