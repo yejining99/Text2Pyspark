@@ -143,19 +143,3 @@ class DatahubMetadataFetcher:
     def _is_valid_gms_server(self, gms_server):
         """GMS 서버 주소의 유효성을 검사하는 함수 (하위 호환성)"""
         return self.client._is_valid_gms_server(gms_server)
-
-
-if __name__ == "__main__":
-    # 기존 테스트 코드와 동일하게 유지
-    fetcher = DatahubMetadataFetcher()
-
-    print(
-        fetcher.get_queries_by_urn(
-            "urn:li:dataset:(urn:li:dataPlatform:dbt,small_bank_1.small_bank_1.ACCOUNTS,PROD)"
-        )
-    )
-    print(
-        fetcher.get_glossary_terms_by_urn(
-            "urn:li:dataset:(urn:li:dataPlatform:dbt,small_bank_1.small_bank_1.ACCOUNTS,PROD)"
-        )
-    )

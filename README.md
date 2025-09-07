@@ -56,16 +56,32 @@ Lang2SQL은 자연어 쿼리를 최적화된 SQL 문으로 변환하는 오픈�
 ### 빠른 설치
 
 ```bash
+# pip
 pip install lang2sql
+
+# uv
+uv venv --python 3.11
+source .venv/bin/activate
+uv add lang2sql
 ```
 
 ### 소스에서 설치
 
 ```bash
+# 소스 클론
 git clone https://github.com/CausalInferenceLab/lang2sql.git
 cd lang2sql
-pip install -r requirements.txt
-python setup.py install
+
+# (권장) uv 사용
+# uv 설치가 되어 있다면 아래 두 줄로 개발 모드 설치
+uv venv
+source .venv/bin/activate
+uv pip install -e .
+
+# (대안) pip 사용
+python -m venv .venv
+source .venv/bin/activate
+pip install -e .
 ```
 
 ---
@@ -86,6 +102,18 @@ lang2sql run-streamlit
 lang2sql --datahub_server http://your-datahub-server:8080 run-streamlit -p 8888
 ```
 
+참고: Streamlit 서버는 `0.0.0.0` 으로 바인딩되어 외부에서 접속 가능합니다.
+
+### Graph Builder 페이지
+
+Streamlit 앱은 멀티 페이지 구조입니다. 좌측 네비게이션에서 "Graph Builder" 페이지를 열어 LangGraph 워크플로우를 구성할 수 있습니다.
+
+- 프리셋 선택: "기본" 또는 "확장"
+- 커스텀 옵션: `PROFILE_EXTRACTION`, `CONTEXT_ENRICHMENT`, `QUERY_MAKER` 포함 여부 토글
+- 선택이 바뀌면 그래프가 즉시 컴파일되어 세션에 적용됩니다
+- "세션 그래프 새로고침" 버튼으로 수동 재적용 가능
+- `QUERY_MAKER`를 비활성화하면 테이블 검색 정보만 표시됩니다
+
 ### VectorDB 선택
 
 FAISS(로컬) 또는 pgvector(PostgreSQL) 중 선택:
@@ -96,7 +124,22 @@ lang2sql --vectordb-type faiss run-streamlit
 
 # pgvector 사용
 lang2sql --vectordb-type pgvector run-streamlit
+
+# 위치 지정 예시
+# FAISS: 인덱스 디렉토리 경로 지정
+lang2sql --vectordb-type faiss --vectordb-location ./table_info_db run-streamlit
+
+# pgvector: 연결 문자열 지정
+lang2sql --vectordb-type pgvector --vectordb-location "postgresql://user:pass@host:5432/db" run-streamlit
 ```
+
+참고: DataHub 없이도 미리 준비된 VectorDB(FAISS 디렉토리 혹은 pgvector 컬렉션)를 바로 사용할 수 있습니다. 자세한 준비 방법은 [DataHub 없이 시작하기](docs/tutorials/getting-started-without-datahub.md)를 참고하세요.
+
+### 처음 시작하기 (DataHub 없이)
+
+튜토리얼 본문이 길어져 별도 문서로 분리되었습니다. 아래 문서를 참고하세요.
+
+- [DataHub 없이 시작하기 튜토리얼](docs/tutorials/getting-started-without-datahub.md)
 
 ### 자연어 쿼리 실행
 
@@ -110,10 +153,11 @@ lang2sql query "고객 데이터를 기반으로 유니크한 유저 수를 카�
 
 ### 환경 설정
 
-- 현재는 pip 패키지 설치로 프로젝트 시작이 어려운 상황입니다.
-- `.env` 파일을 생성하여 설정 관리 (.env.example 참고)
-
----
+- `.env` 파일을 생성하여 설정을 관리합니다. (예시 파일이 있다면 참조)
+- 또는 CLI 옵션으로 환경을 지정할 수 있습니다:
+  - `--env-file-path`: 환경 변수 파일 경로 지정
+  - `--prompt-dir-path`: 프롬프트 템플릿(.md) 디렉토리 지정
+  - `--datahub_server`: DataHub GMS 서버 URL 지정
 
 ## 🏗️ 아키텍처
 
@@ -156,11 +200,6 @@ Lang2SQL은 LangGraph를 사용한 다단계 접근 방식을 따릅니다:
 - 현재는 Datahub를 통해 로컬에 FAISS VectorDB를 생성해야만 사용 가능한 구조입니다.
 - 이 결합도를 낮춰서 Datahub 없이도 기존에 준비된 VectorDB만 있으면 바로 활용할 수 있도록 아키텍처를 개선하는 작업입니다.
 
-### 출력 포맷 강화
-
-- 현재 Streamlit을 통한 웹 인터페이스만 지원하고 있습니다.
-- CLI, JSON 등 다양한 출력 포맷을 지원하여 사용자가 선호하는 환경에서 유연하게 활용할 수 있도록 개선합니다.
-
 ### 모니터링 / 로깅 강화
 
 - 프로젝트 사용 패턴과 성능을 모니터링하고, 상세한 로깅 시스템을 구축합니다.
@@ -170,6 +209,10 @@ Lang2SQL은 LangGraph를 사용한 다단계 접근 방식을 따릅니다:
 
 - 프로젝트 기여 장벽을 낮추기 위한 포괄적인 문서화 작업입니다.
 - 개발자 가이드, 튜토리얼 등을 체계적으로 정리하여 새로운 기여자들이 쉽게 참여할 수 있는 환경을 조성합니다.
+
+### LLM 프론트에서 분리하기
+
+프런트에서는 LLM 호출·키를 제거하고 내부 백엔드 API로 위임해 보안·권한·모니터링을 중앙화합니다.
 
 ---
 

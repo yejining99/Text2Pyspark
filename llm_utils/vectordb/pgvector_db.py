@@ -9,7 +9,7 @@ from sqlalchemy.orm import Session
 from langchain_postgres.vectorstores import PGVector
 
 from llm_utils.tools import get_info_from_db
-from llm_utils.llm_factory import get_embeddings
+from llm_utils.llm import get_embeddings
 
 
 def _check_collection_exists(connection_string: str, collection_name: str) -> bool:

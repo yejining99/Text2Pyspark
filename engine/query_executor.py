@@ -12,7 +12,6 @@ from langchain_core.messages import HumanMessage
 
 from llm_utils.graph_utils.enriched_graph import builder as enriched_builder
 from llm_utils.graph_utils.basic_graph import builder as basic_builder
-from llm_utils.graph_utils.simplified_graph import builder as simplified_builder
 from llm_utils.llm_response_parser import LLMResponseParser
 
 logger = logging.getLogger(__name__)
@@ -26,7 +25,6 @@ def execute_query(
     top_n: int = 5,
     device: str = "cpu",
     use_enriched_graph: bool = False,
-    use_simplified_graph: bool = False,
     session_state: Optional[Union[Dict[str, Any], Any]] = None,
 ) -> Dict[str, Any]:
     """
@@ -49,17 +47,13 @@ def execute_query(
         Dict[str, Any]: 다음 정보를 포함한 Lang2SQL 실행 결과 딕셔너리:
             - "generated_query": 생성된 SQL 쿼리 (`AIMessage`)
             - "messages": 전체 LLM 응답 메시지 목록
-            - "refined_input": AI가 재구성한 입력 질문
             - "searched_tables": 참조된 테이블 목록 등 추가 정보
     """
 
     logger.info("Processing query: %s", query)
 
     # 그래프 선택
-    if use_simplified_graph:
-        graph_type = "simplified"
-        graph_builder = simplified_builder
-    elif use_enriched_graph:
+    if use_enriched_graph:
         graph_type = "enriched"
         graph_builder = enriched_builder
     else:

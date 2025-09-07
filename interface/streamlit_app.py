@@ -12,9 +12,9 @@ PAGES = {
         "page": "lang2sql.py",
         "title": "Lang2SQL",
     },
-    "lang2sql_eval_viz": {
-        "page": "viz_eval.py",
-        "title": "Lang2SQL Evaluation 시각화",
+    "graph_builder": {
+        "page": "graph_builder.py",
+        "title": "Graph Builder",
     },
 }
 
