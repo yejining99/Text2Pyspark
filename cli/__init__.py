@@ -267,11 +267,6 @@ def run_streamlit_cli_command(port: int) -> None:
     help="확장된 그래프(프로파일 추출 + 컨텍스트 보강) 사용 여부",
 )
 @click.option(
-    "--use-simplified-graph",
-    is_flag=True,
-    help="단순화된 그래프(QUERY_REFINER 제거) 사용 여부",
-)
-@click.option(
     "--vectordb-type",
     type=click.Choice(["faiss", "pgvector"]),
     default="faiss",
@@ -293,7 +288,6 @@ def query_command(
     top_n: int,
     device: str,
     use_enriched_graph: bool,
-    use_simplified_graph: bool,
     vectordb_type: str = "faiss",
     vectordb_location: str = None,
 ) -> None:
@@ -335,7 +329,6 @@ def query_command(
             top_n=top_n,
             device=device,
             use_enriched_graph=use_enriched_graph,
-            use_simplified_graph=use_simplified_graph,
         )
 
         # SQL 추출 및 출력
