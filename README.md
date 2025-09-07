@@ -277,20 +277,35 @@ Lang2SQL은 LangGraph를 사용한 다단계 접근 방식을 따릅니다:
 ### 수동 빌드
 
 ```bash
-python setup.py sdist bdist_wheel
-twine upload dist/*
+uv build
+UV_PUBLISH_TOKEN=$PYPI_API_TOKEN uv publish --token $UV_PUBLISH_TOKEN
 ```
 
-### 자동 릴리스
+### 자동 배포(GitHub Actions)
 
-`v*` 형식의 태그를 푸시하여 자동 PyPI 배포 트리거:
+사전 준비: GitHub Secrets에 `PYPI_API_TOKEN` 등록
 
 ```bash
-git tag v1.0.0
-git push origin v1.0.0
+# 1) 버전 업데이트
+#   - 버전 파일: version.py 의 __version__ = "X.Y.Z"
+git add version.py
+git commit -m "chore: bump version to X.Y.Z"
+
+# 2) 태그 생성/푸시 (v* 형식이 트리거)
+git tag vX.Y.Z
+git push origin HEAD
+git push origin vX.Y.Z
 ```
 
-**참고**: GitHub Secrets에 `PYPI_API_TOKEN` 설정 필요.
+설명: `v*` 태그가 푸시되면 `.github/workflows/pypi-release.yml`이 실행되어 uv로 빌드/배포합니다.
+
+### TestPyPI로 사전 검증(선택)
+
+```bash
+uv build
+UV_PUBLISH_TOKEN=$TEST_PYPI_API_TOKEN \
+  uv publish --repository-url https://test.pypi.org/legacy/ --token $UV_PUBLISH_TOKEN
+```
 
 ---
 
