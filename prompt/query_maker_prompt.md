@@ -21,3 +21,20 @@
     이 쿼리는 stg_users 테이블에서 고유한 사용자의 수를 계산합니다.
     사용자는 유니크한 user_id를 가지고 있으며
     중복을 제거하기 위해 COUNT(DISTINCT user_id)를 사용했습니다.
+```
+
+# Input
+
+- 사용자 질문:
+{user_input}
+
+- DB 환경:
+{user_database_env}
+
+- 관련 테이블 및 컬럼 정보:
+{searched_tables}
+
+# Notes
+
+- 위 입력을 바탕으로 최적의 SQL을 생성하세요.
+- 출력은 위 '최종 형태 예시'와 동일한 구조로만 작성하세요.

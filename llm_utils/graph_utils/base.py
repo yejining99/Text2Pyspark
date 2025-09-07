@@ -4,9 +4,7 @@ import json
 from typing_extensions import TypedDict, Annotated
 from langgraph.graph import END, StateGraph
 from langgraph.graph.message import add_messages
-from langchain.chains.sql_database.prompt import SQL_PROMPTS
-from pydantic import BaseModel, Field
-from llm_utils.llm import get_llm
+ 
 
 from llm_utils.chains import (
     query_maker_chain,
@@ -137,35 +135,7 @@ def get_table_info_node(state: QueryMakerState):
 
 # 노드 함수: QUERY_MAKER 노드
 def query_maker_node(state: QueryMakerState):
-    # 사용자 원 질문 + (있다면) 컨텍스트 보강 결과를 함께 전달
-    user_inputs = [state["messages"][0].content]
-    if len(state["messages"]) > 1:
-        last_msg = state["messages"][-1]
-        last_content = last_msg.content if hasattr(last_msg, "content") else str(last_msg)
-        if isinstance(last_content, str) and last_content.strip():
-            user_inputs.append(last_content)
-
-    res = query_maker_chain.invoke(
-        input={
-            "user_input": user_inputs,
-            "searched_tables": [json.dumps(state["searched_tables"])],
-            "user_database_env": [state["user_database_env"]],
-        }
-    )
-    state["generated_query"] = res
-    state["messages"].append(res)
-    return state
-
-
-class SQLResult(BaseModel):
-    sql: str = Field(description="SQL 쿼리 문자열")
-    explanation: str = Field(description="SQL 쿼리 설명")
-
-
-def query_maker_node_with_db_guide(state: QueryMakerState):
-    sql_prompt = SQL_PROMPTS[state["user_database_env"]]
-    llm = get_llm()
-    chain = sql_prompt | llm.with_structured_output(SQLResult)
+    # 사용자 원 질문 + (있다면) 컨텍스트 보강 결과를 하나의 문자열로 결합
     parts = [state["messages"][0].content]
     if len(state["messages"]) > 1:
         last_msg = state["messages"][-1]
@@ -173,41 +143,19 @@ def query_maker_node_with_db_guide(state: QueryMakerState):
         if isinstance(last_content, str) and last_content.strip():
             parts.append(last_content)
 
-    res = chain.invoke(
-        input={
-            "input": "\n\n---\n\n".join(parts),
-            "table_info": [json.dumps(state["searched_tables"])],
-            "top_k": 10,
-        }
-    )
-    state["generated_query"] = res.sql
-    state["messages"].append(res.explanation)
-    return state
-
-
-# 노드 함수: QUERY_MAKER 노드 (refined_input 없이)
-def query_maker_node_without_refiner(state: QueryMakerState):
-    """
-    refined_input 없이 초기 사용자 입력만을 사용하여 SQL을 생성하는 노드입니다.
-
-    이 노드는 QUERY_REFINER 단계를 건너뛰고, 초기 사용자 입력, 프로파일 정보,
-    컨텍스트 보강 정보를 모두 활용하여 SQL을 생성합니다.
-    """
-    # 컨텍스트 보강 결과가 있으면 함께 전달, 없으면 초기 입력만 사용
-    user_inputs = [state["messages"][0].content]
-    if len(state["messages"]) > 1:
-        last_msg = state["messages"][-1]
-        last_content = last_msg.content if hasattr(last_msg, "content") else str(last_msg)
-        if isinstance(last_content, str) and last_content.strip():
-            user_inputs.append(last_content)
+    combined_input = "\n\n---\n\n".join(parts)
+    searched_tables_json = json.dumps(state["searched_tables"], ensure_ascii=False, indent=2)
 
     res = query_maker_chain.invoke(
         input={
-            "user_input": user_inputs,
-            "searched_tables": [json.dumps(state["searched_tables"])],
-            "user_database_env": [state["user_database_env"]],
+            "user_input": combined_input,
+            "user_database_env": state["user_database_env"],
+            "searched_tables": searched_tables_json,
         }
     )
     state["generated_query"] = res
     state["messages"].append(res)
     return state
+
+
+ 

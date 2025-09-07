@@ -25,26 +25,10 @@ class QuestionProfile(BaseModel):
 
 # QueryMakerChain
 def create_query_maker_chain(llm):
-    # SystemPrompt만 yaml 파일로 불러와서 사용
     prompt = get_prompt_template("query_maker_prompt")
     query_maker_prompt = ChatPromptTemplate.from_messages(
         [
             SystemMessagePromptTemplate.from_template(prompt),
-            (
-                "system",
-                "아래는 사용자의 질문입니다:",
-            ),
-            MessagesPlaceholder(variable_name="user_input"),
-            (
-                "system",
-                "다음은 사용자의 db 환경정보와 사용 가능한 테이블 및 컬럼 정보 와 예시쿼리 및 용어집 정보입니다:",
-            ),
-            MessagesPlaceholder(variable_name="user_database_env"),
-            MessagesPlaceholder(variable_name="searched_tables"),
-            (
-                "system",
-                "위 정보를 바탕으로 사용자 질문에 대한 최적의 SQL 쿼리를 최종 형태 예시와 같은 형태로 생성하세요.",
-            ),
         ]
     )
     return query_maker_prompt | llm
