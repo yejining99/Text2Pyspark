@@ -9,9 +9,7 @@ from pydantic import BaseModel, Field
 from llm_utils.llm import get_llm
 
 from llm_utils.chains import (
-    query_refiner_chain,
     query_maker_chain,
-    query_refiner_with_profile_chain,
     profile_extraction_chain,
     query_enrichment_chain,
 )
@@ -21,7 +19,6 @@ from llm_utils.retrieval import search_tables
 from llm_utils.graph_utils.profile_utils import profile_to_text
 
 # 노드 식별자 정의
-QUERY_REFINER = "query_refiner"
 GET_TABLE_INFO = "get_table_info"
 TOOL = "tool"
 TABLE_FILTER = "table_filter"
@@ -36,7 +33,6 @@ class QueryMakerState(TypedDict):
     user_database_env: str
     searched_tables: dict[str, dict[str, str]]
     best_practice_query: str
-    refined_input: str
     question_profile: dict
     generated_query: str
     retriever_name: str
@@ -69,44 +65,6 @@ def profile_extraction_node(state: QueryMakerState):
     return state
 
 
-# 노드 함수: QUERY_REFINER 노드
-def query_refiner_node(state: QueryMakerState):
-    res = query_refiner_chain.invoke(
-        input={
-            "user_input": [state["messages"][0].content],
-            "user_database_env": [state["user_database_env"]],
-            "best_practice_query": [state["best_practice_query"]],
-            "searched_tables": [json.dumps(state["searched_tables"])],
-        }
-    )
-    state["messages"].append(res)
-    state["refined_input"] = res
-    return state
-
-
-# 노드 함수: QUERY_REFINER 노드
-def query_refiner_with_profile_node(state: QueryMakerState):
-    """
-    자연어 쿼리로부터 질문 유형(PROFILE)을 사용해 자연어 질의를 확장하는 노드입니다.
-
-    """
-
-    profile_bullets = profile_to_text(state["question_profile"])
-    res = query_refiner_with_profile_chain.invoke(
-        input={
-            "user_input": [state["messages"][0].content],
-            "user_database_env": [state["user_database_env"]],
-            "best_practice_query": [state["best_practice_query"]],
-            "searched_tables": [json.dumps(state["searched_tables"])],
-            "profile_prompt": [profile_bullets],
-        }
-    )
-    state["messages"].append(res)
-    state["refined_input"] = res
-
-    print("refined_input before context enrichment : ", res.content)
-    return state
-
 
 # 노드 함수: CONTEXT_ENRICHMENT 노드
 def context_enrichment_node(state: QueryMakerState):
@@ -124,7 +82,7 @@ def context_enrichment_node(state: QueryMakerState):
 
     Args:
         state (QueryMakerState): 쿼리와 관련된 상태 정보를 담고 있는 객체.
-                                상태 객체는 `refined_input`, `question_profile`, `searched_tables` 등의 정보를 포함합니다.
+                                상태 객체는 `messages`, `question_profile`, `searched_tables` 등의 정보를 포함합니다.
 
     Returns:
         QueryMakerState: 보강된 질문이 포함된 상태 객체.
@@ -147,10 +105,8 @@ def context_enrichment_node(state: QueryMakerState):
         question_profile = state["question_profile"]
     question_profile_json = json.dumps(question_profile, ensure_ascii=False, indent=2)
 
-    # refined_input이 없는 경우 초기 사용자 입력 사용
-    refined_question = state.get("refined_input", state["messages"][0].content)
-    if hasattr(refined_question, "content"):
-        refined_question = refined_question.content
+    # 초기 사용자 입력 사용
+    refined_question = state["messages"][0].content
 
     enriched_text = query_enrichment_chain.invoke(
         input={
@@ -160,7 +116,6 @@ def context_enrichment_node(state: QueryMakerState):
         }
     )
 
-    state["refined_input"] = enriched_text
     state["messages"].append(enriched_text)
     print("After context enrichment : ", enriched_text.content)
 
@@ -182,10 +137,17 @@ def get_table_info_node(state: QueryMakerState):
 
 # 노드 함수: QUERY_MAKER 노드
 def query_maker_node(state: QueryMakerState):
+    # 사용자 원 질문 + (있다면) 컨텍스트 보강 결과를 함께 전달
+    user_inputs = [state["messages"][0].content]
+    if len(state["messages"]) > 1:
+        last_msg = state["messages"][-1]
+        last_content = last_msg.content if hasattr(last_msg, "content") else str(last_msg)
+        if isinstance(last_content, str) and last_content.strip():
+            user_inputs.append(last_content)
+
     res = query_maker_chain.invoke(
         input={
-            "user_input": [state["messages"][0].content],
-            "refined_input": [state["refined_input"]],
+            "user_input": user_inputs,
             "searched_tables": [json.dumps(state["searched_tables"])],
             "user_database_env": [state["user_database_env"]],
         }
@@ -204,11 +166,16 @@ def query_maker_node_with_db_guide(state: QueryMakerState):
     sql_prompt = SQL_PROMPTS[state["user_database_env"]]
     llm = get_llm()
     chain = sql_prompt | llm.with_structured_output(SQLResult)
+    parts = [state["messages"][0].content]
+    if len(state["messages"]) > 1:
+        last_msg = state["messages"][-1]
+        last_content = last_msg.content if hasattr(last_msg, "content") else str(last_msg)
+        if isinstance(last_content, str) and last_content.strip():
+            parts.append(last_content)
+
     res = chain.invoke(
         input={
-            "input": "\n\n---\n\n".join(
-                [state["messages"][0].content] + [state["refined_input"].content]
-            ),
+            "input": "\n\n---\n\n".join(parts),
             "table_info": [json.dumps(state["searched_tables"])],
             "top_k": 10,
         }
@@ -226,19 +193,17 @@ def query_maker_node_without_refiner(state: QueryMakerState):
     이 노드는 QUERY_REFINER 단계를 건너뛰고, 초기 사용자 입력, 프로파일 정보,
     컨텍스트 보강 정보를 모두 활용하여 SQL을 생성합니다.
     """
-    # 컨텍스트 보강된 질문 (refined_input이 없는 경우 초기 입력 사용)
-    enriched_question = state.get("refined_input", state["messages"][0])
-
-    # enriched_question이 AIMessage인 경우 content 추출, 문자열인 경우 그대로 사용
-    if hasattr(enriched_question, "content"):
-        enriched_question_content = enriched_question.content
-    else:
-        enriched_question_content = str(enriched_question)
+    # 컨텍스트 보강 결과가 있으면 함께 전달, 없으면 초기 입력만 사용
+    user_inputs = [state["messages"][0].content]
+    if len(state["messages"]) > 1:
+        last_msg = state["messages"][-1]
+        last_content = last_msg.content if hasattr(last_msg, "content") else str(last_msg)
+        if isinstance(last_content, str) and last_content.strip():
+            user_inputs.append(last_content)
 
     res = query_maker_chain.invoke(
         input={
-            "user_input": [state["messages"][0].content],
-            "refined_input": [enriched_question_content],
+            "user_input": user_inputs,
             "searched_tables": [json.dumps(state["searched_tables"])],
             "user_database_env": [state["user_database_env"]],
         }

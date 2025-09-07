@@ -23,31 +23,6 @@ class QuestionProfile(BaseModel):
     has_temporal_comparison: bool = Field(description="기간 비교 포함 여부")
     intent_type: str = Field(description="질문의 주요 의도 유형")
 
-
-def create_query_refiner_chain(llm):
-    prompt = get_prompt_template("query_refiner_prompt")
-    tool_choice_prompt = ChatPromptTemplate.from_messages(
-        [
-            SystemMessagePromptTemplate.from_template(prompt),
-            MessagesPlaceholder(variable_name="user_input"),
-            SystemMessagePromptTemplate.from_template(
-                "다음은 사용자의 실제 사용 가능한 테이블 및 컬럼 정보 와 예시쿼리 및 용어집 정보입니다:"
-            ),
-            MessagesPlaceholder(variable_name="searched_tables"),
-            SystemMessagePromptTemplate.from_template(
-                """
-                위 사용자의 입력을 바탕으로
-                분석 관점에서 **충분히 답변 가능한 형태**로
-                "구체화된 질문"을 작성하고,
-                필요한 경우 가정이나 전제 조건을 함께 제시해 주세요.
-                """,
-            ),
-        ]
-    )
-
-    return tool_choice_prompt | llm
-
-
 # QueryMakerChain
 def create_query_maker_chain(llm):
     # SystemPrompt만 yaml 파일로 불러와서 사용
@@ -57,10 +32,9 @@ def create_query_maker_chain(llm):
             SystemMessagePromptTemplate.from_template(prompt),
             (
                 "system",
-                "아래는 사용자의 질문 및 구체화된 질문입니다:",
+                "아래는 사용자의 질문입니다:",
             ),
             MessagesPlaceholder(variable_name="user_input"),
-            MessagesPlaceholder(variable_name="refined_input"),
             (
                 "system",
                 "다음은 사용자의 db 환경정보와 사용 가능한 테이블 및 컬럼 정보 와 예시쿼리 및 용어집 정보입니다:",
@@ -74,35 +48,6 @@ def create_query_maker_chain(llm):
         ]
     )
     return query_maker_prompt | llm
-
-
-def create_query_refiner_with_profile_chain(llm):
-    prompt = get_prompt_template("query_refiner_prompt")
-
-    tool_choice_prompt = ChatPromptTemplate.from_messages(
-        [
-            SystemMessagePromptTemplate.from_template(prompt),
-            MessagesPlaceholder(variable_name="user_input"),
-            SystemMessagePromptTemplate.from_template(
-                "다음은 사용자의 실제 사용 가능한 테이블 및 컬럼 정보 와 예시쿼리 및 용어집 정보입니다:"
-            ),
-            MessagesPlaceholder(variable_name="searched_tables"),
-            # 프로파일 정보 입력
-            SystemMessagePromptTemplate.from_template(
-                "다음은 사용자의 질문을 분석한 프로파일 정보입니다."
-            ),
-            MessagesPlaceholder("profile_prompt"),
-            SystemMessagePromptTemplate.from_template(
-                """
-                위 사용자의 입력과 위 조건을 바탕으로
-                분석 관점에서 **충분히 답변 가능한 형태**로
-                "구체화된 질문"을 작성하세요.
-                """,
-            ),
-        ]
-    )
-
-    return tool_choice_prompt | llm
 
 
 def create_query_enrichment_chain(llm):
@@ -131,11 +76,9 @@ def create_profile_extraction_chain(llm):
     return chain
 
 
-query_refiner_chain = create_query_refiner_chain(llm)
 query_maker_chain = create_query_maker_chain(llm)
 profile_extraction_chain = create_profile_extraction_chain(llm)
-query_refiner_with_profile_chain = create_query_refiner_with_profile_chain(llm)
 query_enrichment_chain = create_query_enrichment_chain(llm)
 
 if __name__ == "__main__":
-    query_refiner_chain.invoke()
+    pass

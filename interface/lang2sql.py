@@ -20,7 +20,6 @@ from llm_utils.llm_response_parser import LLMResponseParser
 from infra.observability.token_usage import TokenUtils
 from llm_utils.graph_utils.enriched_graph import builder as enriched_builder
 from llm_utils.graph_utils.basic_graph import builder
-from llm_utils.graph_utils.simplified_graph import builder as simplified_builder
 
 
 TITLE = "Lang2SQL"
@@ -61,7 +60,6 @@ def execute_query(
         dict: 다음 정보를 포함한 Lang2SQL 실행 결과 딕셔너리:
             - "generated_query": 생성된 SQL 쿼리 (`AIMessage`)
             - "messages": 전체 LLM 응답 메시지 목록
-            - "refined_input": AI가 재구성한 입력 질문
             - "searched_tables": 참조된 테이블 목록 등 추가 정보
     """
 
@@ -72,7 +70,6 @@ def execute_query(
         top_n=top_n,
         device=device,
         use_enriched_graph=st.session_state.get("use_enriched", False),
-        use_simplified_graph=st.session_state.get("use_simplified", False),
         session_state=st.session_state,
     )
 
@@ -164,7 +161,17 @@ def display_result(
     if should_show("show_question_reinterpreted_by_ai"):
         st.markdown("---")
         st.markdown("**AI가 재해석한 사용자 질문:**")
-        st.code(res["refined_input"].content)
+        try:
+            if len(res["messages"]) > 1:
+                candidate = res["messages"][ -2 ]
+                question_text = (
+                    candidate.content if hasattr(candidate, "content") else str(candidate)
+                )
+            else:
+                question_text = res["messages"][0].content
+        except Exception:
+            question_text = str(res["messages"][0].content)
+        st.code(question_text)
 
     if should_show("show_referenced_tables"):
         st.markdown("---")
@@ -200,8 +207,19 @@ def display_result(
                 sql = LLMResponseParser.extract_sql(sql_raw)
                 df = database.run_sql(sql)
                 st.markdown("**쿼리 결과 시각화:**")
+                try:
+                    if len(res["messages"]) > 1:
+                        candidate = res["messages"][ -2 ]
+                        chart_question = (
+                            candidate.content if hasattr(candidate, "content") else str(candidate)
+                        )
+                    else:
+                        chart_question = res["messages"][0].content
+                except Exception:
+                    chart_question = str(res["messages"][0].content)
+
                 display_code = DisplayChart(
-                    question=res["refined_input"].content,
+                    question=chart_question,
                     sql=sql,
                     df_metadata=f"Running df.dtypes gives:\n{df.dtypes}",
                 )
@@ -225,21 +243,14 @@ st.sidebar.markdown("### 워크플로우 선택")
 use_enriched = st.sidebar.checkbox(
     "프로파일 추출 & 컨텍스트 보강 워크플로우 사용", value=False
 )
-use_simplified = st.sidebar.checkbox(
-    "단순화된 워크플로우 사용 (QUERY_REFINER 제거)", value=False
-)
 
 # 세션 상태 초기화
 if (
     "graph" not in st.session_state
     or st.session_state.get("use_enriched") != use_enriched
-    or st.session_state.get("use_simplified") != use_simplified
 ):
     # 그래프 선택 로직
-    if use_simplified:
-        graph_builder = simplified_builder
-        graph_type = "단순화된"
-    elif use_enriched:
+    if use_enriched:
         graph_builder = enriched_builder
         graph_type = "확장된"
     else:
@@ -248,16 +259,12 @@ if (
 
     st.session_state["graph"] = graph_builder.compile()
     st.session_state["use_enriched"] = use_enriched
-    st.session_state["use_simplified"] = use_simplified
     st.info(f"Lang2SQL이 성공적으로 시작되었습니다. ({graph_type} 워크플로우)")
 
 # 새로고침 버튼 추가
 if st.sidebar.button("Lang2SQL 새로고침"):
     # 그래프 선택 로직
-    if st.session_state.get("use_simplified"):
-        graph_builder = simplified_builder
-        graph_type = "단순화된"
-    elif st.session_state.get("use_enriched"):
+    if st.session_state.get("use_enriched"):
         graph_builder = enriched_builder
         graph_type = "확장된"
     else:

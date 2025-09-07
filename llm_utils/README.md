@@ -40,16 +40,16 @@ Lang2SQL 파이프라인에서 LLM, 검색(RAG), 그래프 워크플로우, DB �
 ### Depth 2.5: 체인(Chains)
 
 - **`chains.py`**: LangChain ChatPromptTemplate로 구성된 체인.
-  - `create_query_refiner_chain`, `create_query_maker_chain`, `create_profile_extraction_chain`, `create_query_refiner_with_profile_chain`, `create_query_enrichment_chain`
+  - `create_query_maker_chain`, `create_profile_extraction_chain`, `create_query_enrichment_chain`
   - `QuestionProfile` Pydantic 모델로 질의 특성 구조화 추출.
 
 ### Depth 3: 그래프(Graph) 워크플로우
 
 - **`graph_utils/base.py`**: 공통 상태(`QueryMakerState`)와 노드 함수 집합.
-  - 노드: `get_table_info_node`(RAG), `profile_extraction_node`, `query_refiner_node`/`query_refiner_with_profile_node`, `context_enrichment_node`, `query_maker_node`, `query_maker_node_without_refiner`.
+  - 노드: `get_table_info_node`(RAG), `profile_extraction_node`, `context_enrichment_node`, `query_maker_node`, `query_maker_node_without_refiner`.
   - 각 노드는 `chains.py`와 `retrieval.py`, `utils.profile_to_text` 등을 호출하며 상태를 갱신.
-- **`graph_utils/basic_graph.py`**: GET_TABLE_INFO → QUERY_REFINER → QUERY_MAKER → END
-- **`graph_utils/enriched_graph.py`**: GET_TABLE_INFO → PROFILE_EXTRACTION → QUERY_REFINER(with profile) → CONTEXT_ENRICHMENT → QUERY_MAKER → END
+- **`graph_utils/basic_graph.py`**: GET_TABLE_INFO → QUERY_MAKER → END
+- **`graph_utils/enriched_graph.py`**: GET_TABLE_INFO → PROFILE_EXTRACTION → CONTEXT_ENRICHMENT → QUERY_MAKER → END
 - **`graph_utils/simplified_graph.py`**: GET_TABLE_INFO → PROFILE_EXTRACTION → CONTEXT_ENRICHMENT → QUERY_MAKER(without refiner) → END
 
 ### 통합 흐름(End-to-End)
