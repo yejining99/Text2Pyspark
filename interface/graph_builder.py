@@ -162,9 +162,7 @@ top_n = st.slider(
 _device_options = ["cpu", "cuda"]
 _device_default = _prev_cfg.get("device", "cpu")
 _device_index = (
-    _device_options.index(_device_default)
-    if _device_default in _device_options
-    else 0
+    _device_options.index(_device_default) if _device_default in _device_options else 0
 )
 device = st.selectbox(
     "모델 실행 장치",

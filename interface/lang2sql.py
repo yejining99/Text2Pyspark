@@ -305,9 +305,7 @@ user_database_env = st.selectbox(
 _device_options = ["cpu", "cuda"]
 _default_device = st.session_state.get("default_device", "cpu")
 _device_index = (
-    _device_options.index(_default_device)
-    if _default_device in _device_options
-    else 0
+    _device_options.index(_default_device) if _default_device in _device_options else 0
 )
 device = st.selectbox(
     "모델 실행 장치를 선택하세요:",
