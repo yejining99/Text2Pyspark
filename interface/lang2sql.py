@@ -302,10 +302,15 @@ user_database_env = st.selectbox(
     index=0,
 )
 
+_device_options = ["cpu", "cuda"]
+_default_device = st.session_state.get("default_device", "cpu")
+_device_index = (
+    _device_options.index(_default_device) if _default_device in _device_options else 0
+)
 device = st.selectbox(
     "모델 실행 장치를 선택하세요:",
-    options=["cpu", "cuda"],
-    index=0,
+    options=_device_options,
+    index=_device_index,
 )
 
 retriever_options = {
@@ -313,18 +318,25 @@ retriever_options = {
     "Reranker": "Reranker 검색 (정확도 향상)",
 }
 
+_retriever_keys = list(retriever_options.keys())
+_default_retriever = st.session_state.get("default_retriever_name", "기본")
+_retriever_index = (
+    _retriever_keys.index(_default_retriever)
+    if _default_retriever in _retriever_keys
+    else 0
+)
 user_retriever = st.selectbox(
     "검색기 유형을 선택하세요:",
-    options=list(retriever_options.keys()),
+    options=_retriever_keys,
     format_func=lambda x: retriever_options[x],
-    index=0,
+    index=_retriever_index,
 )
 
 user_top_n = st.slider(
     "검색할 테이블 정보 개수:",
     min_value=1,
     max_value=20,
-    value=5,
+    value=int(st.session_state.get("default_top_n", 5)),
     step=1,
     help="검색할 테이블 정보의 개수를 설정합니다. 값이 클수록 더 많은 테이블 정보를 검색하지만 처리 시간이 길어질 수 있습니다.",
 )
