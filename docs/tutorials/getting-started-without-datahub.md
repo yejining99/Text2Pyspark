@@ -2,6 +2,25 @@
 
 이 문서는 DataHub 없이도 Lang2SQL을 바로 사용하기 위한 최소 절차를 설명합니다. CSV로 테이블/컬럼 설명을 준비해 FAISS 또는 pgvector에 적재한 뒤 Lang2SQL을 실행합니다.
 
+### 0) 준비
+
+```bash
+# 소스 클론
+git clone https://github.com/CausalInferenceLab/lang2sql.git
+cd lang2sql
+
+# (권장) uv 사용
+# uv 설치가 되어 있다면 아래 두 줄로 개발 모드 설치
+uv venv --python 3.11
+source .venv/bin/activate
+uv pip install -e .
+
+# (대안) pip 사용
+python -m venv .venv
+source .venv/bin/activate
+pip install -e .
+```
+
 ### 1) .env 최소 설정 (OpenAI 기준)
 
 ```bash
@@ -20,11 +39,15 @@ VECTORDB_LOCATION=./table_info_db  # FAISS 디렉토리 경로
 # VECTORDB_TYPE=pgvector
 # VECTORDB_LOCATION=postgresql://user:pass@host:5432/db
 # PGVECTOR_COLLECTION=table_info_db
+
+# DB 타입
+DB_TYPE=clickhouse
 ```
 
 중요: 코드상 OpenAI 키는 `OPEN_AI_KEY` 환경변수를 사용합니다. `.example.env`의 `OPENAI_API_KEY`는 사용되지 않으니 혼동에 주의하세요.
 
 ### 2) 테이블/컬럼 메타데이터 준비(CSV 예시)
+- table_catalog.csv
 
 ```csv
 table_name,table_description,column_name,column_description
@@ -40,13 +63,31 @@ orders,주문 정보 테이블,status,주문 상태
 ### 3) FAISS 인덱스 생성(로컬)
 
 ```python
-from collections import defaultdict
-import csv, os
-from langchain_openai import OpenAIEmbeddings
-from langchain_community.vectorstores import FAISS
+"""
+create_faiss.py
 
-CSV_PATH = "./table_catalog.csv"      # 위 CSV 파일 경로
-OUTPUT_DIR = "./table_info_db"        # VECTORDB_LOCATION과 동일하게 맞추세요
+CSV 파일에서 테이블과 컬럼 정보를 불러와 OpenAI 임베딩으로 벡터화한 뒤,
+FAISS 인덱스를 생성하고 로컬 디렉토리에 저장한다.
+
+환경 변수:
+    OPEN_AI_KEY: OpenAI API 키
+    OPEN_AI_EMBEDDING_MODEL: 사용할 임베딩 모델 이름
+
+출력:
+    지정된 OUTPUT_DIR 경로에 FAISS 인덱스 저장
+"""
+
+import csv
+import os
+from collections import defaultdict
+
+from dotenv import load_dotenv
+from langchain_community.vectorstores import FAISS
+from langchain_openai import OpenAIEmbeddings
+
+load_dotenv()
+CSV_PATH = "./table_catalog.csv"  # 위 CSV 파일 경로
+OUTPUT_DIR = "./table_info_db"    # .env 파일의 VECTORDB_LOCATION 값과 동일하게 맞추세요.
 
 tables = defaultdict(lambda: {"desc": "", "columns": []})
 with open(CSV_PATH, newline="", encoding="utf-8") as f:
@@ -63,9 +104,12 @@ for t, info in tables.items():
     cols = "\n".join([f"{c}: {d}" for c, d in info["columns"]])
     page = f"{t}: {info['desc']}\nColumns:\n {cols}"
     from langchain.schema import Document
+
     docs.append(Document(page_content=page))
 
-emb = OpenAIEmbeddings(model=os.getenv("OPEN_AI_EMBEDDING_MODEL"), openai_api_key=os.getenv("OPEN_AI_KEY"))
+emb = OpenAIEmbeddings(
+    model=os.getenv("OPEN_AI_EMBEDDING_MODEL"), openai_api_key=os.getenv("OPEN_AI_KEY")
+)
 db = FAISS.from_documents(docs, emb)
 os.makedirs(OUTPUT_DIR, exist_ok=True)
 db.save_local(OUTPUT_DIR)
@@ -119,5 +163,3 @@ print(f"pgvector collection populated: {COLLECTION}")
 ```
 
 주의: FAISS 디렉토리가 없으면 현재 코드는 DataHub에서 메타데이터를 가져와 인덱스를 생성하려고 시도합니다. DataHub를 사용하지 않는 경우 위 절차로 사전에 VectorDB를 만들어 두세요.
-
-
