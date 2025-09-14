@@ -74,7 +74,7 @@ cd lang2sql
 
 # (권장) uv 사용
 # uv 설치가 되어 있다면 아래 두 줄로 개발 모드 설치
-uv venv
+uv venv --python 3.11
 source .venv/bin/activate
 uv pip install -e .
 
