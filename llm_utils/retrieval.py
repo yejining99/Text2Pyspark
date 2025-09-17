@@ -62,44 +62,77 @@ def search_tables(
     query: str, retriever_name: str = "기본", top_n: int = 5, device: str = "cpu"
 ):
     """쿼리에 맞는 테이블 정보를 검색합니다."""
-    if retriever_name == "기본":
-        db = get_vector_db()
-        doc_res = db.similarity_search(query, k=top_n)
-    else:
-        retriever = get_retriever(
-            retriever_name=retriever_name, top_n=top_n, device=device
-        )
-        doc_res = retriever.invoke(query)
+    print(f"🔍 검색 시작: '{query}' (retriever: {retriever_name}, top_n: {top_n})")
+    
+    try:
+        if retriever_name == "기본":
+            db = get_vector_db()
+            print(f"✅ 벡터 DB 로드 성공")
+            
+            # similarity_search_with_score를 사용하여 유사도 점수도 함께 가져옴
+            doc_score_pairs = db.similarity_search_with_score(query, k=top_n)
+            doc_res = [(doc, score) for doc, score in doc_score_pairs]
+            print(f"📊 검색 결과: {len(doc_res)}개 문서 찾음")
+        else:
+            retriever = get_retriever(
+                retriever_name=retriever_name, top_n=top_n, device=device
+            )
+            docs = retriever.invoke(query)
+            # Reranker의 경우 score 정보가 없으므로 기본값 설정
+            doc_res = [(doc, getattr(doc, 'metadata', {}).get('score', 0.5)) for doc in docs]
+            print(f"📊 Reranker 검색 결과: {len(doc_res)}개 문서 찾음")
 
-    # 결과를 사전 형태로 변환
-    documents_dict = {}
-    for doc in doc_res:
-        lines = doc.page_content.split("\n")
+        # 결과를 사전 형태로 변환
+        documents_dict = {}
+        for i, (doc, score) in enumerate(doc_res):
+            try:
+                lines = doc.page_content.split("\n")
+                print(f"📄 처리 중인 문서 {i+1}: {lines[0][:50]}...")
 
-        # 테이블명 및 설명 추출
-        table_name, table_desc = lines[0].split(": ", 1)
+                # 테이블명 및 설명 추출
+                if ": " not in lines[0]:
+                    print(f"⚠️ 경고: 테이블 정보 형식이 올바르지 않습니다: {lines[0]}")
+                    continue
+                    
+                table_name, table_desc = lines[0].split(": ", 1)
 
-        # 섹션별로 정보 추출 (테이블/컬럼만 사용)
-        columns = {}
-        current_section = None
+                # 섹션별로 정보 추출 (테이블/컬럼만 사용)
+                columns = {}
+                current_section = None
 
-        for i, line in enumerate(lines[1:], 1):
-            line = line.strip()
+                for j, line in enumerate(lines[1:], 1):
+                    line = line.strip()
 
-            # 섹션 헤더 확인
-            if line == "Columns:":
-                current_section = "columns"
+                    # 섹션 헤더 확인
+                    if line == "Columns:":
+                        current_section = "columns"
+                        continue
+
+                    # 각 섹션의 내용 파싱
+                    if current_section == "columns" and ": " in line:
+                        col_name, col_desc = line.split(": ", 1)
+                        columns[col_name.strip()] = col_desc.strip()
+
+                # 딕셔너리 저장 (유사도 점수 포함)
+                documents_dict[table_name] = {
+                    "table_description": table_desc.strip(),
+                    "score": f"{score:.3f}",  # 유사도 점수 추가
+                    "rank": i + 1,  # 순위 추가
+                    **columns,  # 컬럼 정보 추가
+                }
+                print(f"✅ 테이블 '{table_name}' 처리 완료 (유사도: {score:.3f})")
+                
+            except Exception as e:
+                print(f"❌ 문서 처리 중 오류 발생: {e}")
+                print(f"문제가 된 문서: {doc.page_content[:100]}...")
                 continue
 
-            # 각 섹션의 내용 파싱
-            if current_section == "columns" and ": " in line:
-                col_name, col_desc = line.split(": ", 1)
-                columns[col_name.strip()] = col_desc.strip()
-
-        # 딕셔너리 저장
-        documents_dict[table_name] = {
-            "table_description": table_desc.strip(),
-            **columns,  # 컬럼 정보 추가
-        }
-
-    return documents_dict
+        print(f"🎯 최종 결과: {len(documents_dict)}개 테이블 반환")
+        return documents_dict
+        
+    except Exception as e:
+        print(f"❌ 검색 중 전체 오류 발생: {e}")
+        print(f"오류 타입: {type(e).__name__}")
+        import traceback
+        traceback.print_exc()
+        return {}

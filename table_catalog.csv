@@ -1,0 +1,257 @@
+﻿table_name,table_description,column_name,column_description
+bill,인청구서,hosp_bzac_id,병원 거래처를 식별하는 고유 ID 예시: 4mi6lcWHvb
+bill,인청구서,psbll_id,인(人) 청구서를 식별하는 고유 ID 예시: 3K6CCpnoc2
+bill,인청구서,dmpe_id,피해자의 고유 식별자 예시: 3K6CCq4zKc
+bill,인청구서,clm_id,보험 청구를 식별하는 ID 예시: 3K6CCq5iWn
+bill,인청구서,cus_id,고객 고유 ID 예시: 28dxevPQfu
+bill,인청구서,ctr_id,계약 고유 ID 예시: 63R45212
+bill,인청구서,cov_ins_amt_id,담보 보험금 식별자 예시: 4mu0Gwp803
+bill,인청구서,hins_amt_id,인 보험금 식별자 예시: 4mu0GsaDXS
+bill,인청구서,hins_amt_data_div_cd,"인보험금 데이터 구분 코드 (01: 인청구서, 02: 입원통원병원, 03: 진단, 04: 수술, 05: 피해기간, 06: 타사사고, 07: 한방치아, 08: 치료검사) 예시: 01"
+bill,인청구서,cov_cd,담보 코드 예시: 620039
+bill,인청구서,rsk_unt_cd,위험 단위 코드 예시: 1C00091
+bill,인청구서,gurt_unt_cd,보장 단위 코드 예시: 1C00091002
+bill,인청구서,ins_amt_apvl_dt,보험금 결재 일자 예시: 2016-11-07
+bill,인청구서,slry_dcn_ins_amt,급여 결정 보험금 예시: 0.0
+bill,인청구서,nsry_dcn_ins_amt,비급여 결정 보험금 예시: 0.0
+bill,인청구서,dcn_ins_amt,총 결정 보험금 예시: 0.0
+bill,인청구서,acd_rct_id,사고 접수 ID 예시: 3K6CCq5BQR
+bill,인청구서,acd_rct_dt,사고 접수 일자 예시: 2011-06-16
+bill,인청구서,last_rct_dt,최종 접수 일자 예시: 2016-11-02
+bill,인청구서,ctr_obj_id,계약 목적물 ID 예시: 0y4Vm1pmR1
+bill,인청구서,acd_no_yy,사고 번호 (년도) 예시: 2011
+bill,인청구서,acd_no_seq,사고 번호 순번 예시: 284991
+bill,인청구서,acd_dt,사고 발생 일자 예시: 2011-05-19
+bill,인청구서,pol_no,보험 증권 번호 예시: 63R45212
+bill,인청구서,sbcp_dt,청약 일자 예시: 2006-07-18
+bill,인청구서,unt_pd_cd,단위 상품 코드 예시: 60267
+bill,인청구서,inspe_cus_no,피보험자 고객 번호 예시: 10014373023
+bill,인청구서,inspe_gndr_cd,피보험자 성별 코드 예시: 1
+bill,인청구서,inspe_bdt,"피보험자 생년월일 예시: 681230-01-01 * 데이터 오류: 원래는 68년 12월 30일"
+bill,인청구서,dmpe_acd_attm_age,피해자 사고 당시 연령 예시: 42
+bill,인청구서,tacd_job_cd,사고 시점의 직업 코드 예시: 11119
+bill,인청구서,all_kr_disz_cd_con,전체 한국 질병 코드 내용 예시: D13;D37;J00
+bill,인청구서,all_obst_dgn_cd_con,전체 장해 진단 코드 내용
+bill,인청구서,met_st_dt,진료 시작일자 예시: 2011-05-23
+bill,인청구서,met_ed_dt,진료 종료일자 예시: 2011-05-23
+bill,인청구서,met_dd_num,진료 일수 예시: 1
+bill,인청구서,ghr_st_dt,통원 시작일자 예시: 2011-05-23
+bill,인청구서,ghr_ed_dt,통원 종료일자 예시: 2011-05-23
+bill,인청구서,ghr_dd_num,통원 일수 예시: 1
+bill,인청구서,hosp_nm,진료 병원명 예시: 경상대학교병원
+bill,인청구서,cslsf_amt,총 청구 급여 본인부담금 예시: 326134.0
+bill,인청구서,cnsy_amt,총 청구 비급여 본인부담금 예시: 34745.0
+bill,인청구서,cslsf_hsp_exp,청구 급여 본인 입원비
+bill,인청구서,cnsy_hsp_exp,청구 비급여 입원비
+bill,인청구서,cslsf_medi_pcdr_atio_exp,청구 급여 본인 처치 및 시술료 (한방)
+bill,인청구서,cnsy_medi_pcdr_atio_exp,청구 비급여 처치 및 시술료 (한방)
+bill,인청구서,cslsf_medi_phy_exp,청구 급여 본인 한방 물리치료료
+bill,인청구서,cnsy_medi_phy_exp,청구 비급여 한방 물리치료료
+bill,인청구서,cslsf_hb_mdc,청구 급여 본인 한약 (첩약)
+bill,인청구서,cnsy_hb_mdc,청구 비급여 한약 (첩약)
+bill,인청구서,cslsf_medi_atio,청구 급여 본인 한방 시술
+bill,인청구서,cnsy_medi_atio,청구 비급여 한방 시술
+bill,인청구서,cslsf_medi_dect_fee,청구 급여 본인 탕전료
+bill,인청구서,cnsy_medi_dect_fee,청구 비급여 탕전료
+bill,인청구서,CSLSF_DCTR_FEE,청구 급여 본인 진찰료
+bill,인청구서,CSLSF_FD_EXP,청구 급여 본인 식대
+bill,인청구서,CSLSF_ACT_FEE_APMT,"청구 급여 본인 행위료(투약 및 조제)"
+bill,인청구서,CSLSF_MDIC_APMT,"청구 급여 본인 의약품(투약 및 조제)"
+bill,인청구서,CSLSF_ACT_FEE_INJC_FEE,"청구 급여 본인 행위료(주사)"
+bill,인청구서,CSLSF_MDIC_INJC_FEE,"청구 급여 본인 의약품(주사)"
+bill,인청구서,CSLSF_ANTH_EXP,청구 급여 본인 마취료
+bill,인청구서,CSLSF_ATIO_OPER_EXP,청구 급여 본인 처치 수술료
+bill,인청구서,CSLSF_EXAM_EXP,청구 급여 본인 검사료
+bill,인청구서,CSLSF_PICT_DGFE,청구 급여 본인 영상 진단료
+bill,인청구서,CSLSF_RDI_FEE,청구 급여 본인 방사선료
+bill,인청구서,CSLSF_MDI_MATL_AMT,청구 급여 본인 치료재료 금액
+bill,인청구서,CSLSF_RHBL_PHY_TMFE,청구 급여 본인 재활 물리치료료
+bill,인청구서,CSLSF_PSCH_EXP,청구 급여 본인 정신요법료
+bill,인청구서,CSLSF_WHB_BLIG_TMFE,청구 급여 본인 전혈 혈액성분제 치료료
+bill,인청구서,CSLSF_CT_DGFE,청구 급여 본인 CT 진단료
+bill,인청구서,CSLSF_MRI_DGFE,청구 급여 본인 MRI 진단료
+bill,인청구서,CSLSF_PETF,청구 급여 본인 PET 진단료
+bill,인청구서,CSLSF_USWV_DGFE,청구 급여 본인 초음파 진단료
+bill,인청구서,CSLSF_DTPR_CRRC_TMFE,청구 급여 본인 보철교정 치료료
+bill,인청구서,CSLSF_CTF_FEE,청구 급여 본인 증명서 수수료
+bill,인청구서,CSLSF_ETC_AMT,청구 급여 본인 기타 금액
+bill,인청구서,CSLSF_TRM_EXPT_AMT,청구 급여 본인 항목 제외 금액
+bill,인청구서,CSLSF_FMCT_RPHP_AMT,청구 급여 본인 정액수가 요양병원 금액
+bill,인청구서,CSLSF_EMCT_MET_EXP,청구 급여 본인 포괄수가 진료비
+bill,인청구서,CSLSF_CRPY_INRP_AMT,청구 급여 본인 자보지급 산재 요양금액
+bill,인청구서,CSLSF_EMGC_MNG_AMT,청구 급여 본인 응급 관리 금액
+bill,인청구서,CSLSF_RSRV_DCTR_FEE,청구 급여 본인 예약 진찰료
+bill,인청구서,CSLSF_EFOD24_AMT,청구 급여 본인 시행령 별표 2 제4호 금액
+bill,인청구서,CSLSF_RCED_AMT,청구 급여 본인 영수증 이외 서류 금액
+bill,인청구서,CNSY_DCTR_FEE,청구 비급여 진찰료
+bill,인청구서,CNSY_FD_EXP,청구 비급여 식대
+bill,인청구서,CNSY_ACT_FEE_APMT,"청구 비급여 행위료(투약 및 조제)"
+bill,인청구서,CNSY_MDIC_APMT,"청구 비급여 의약품(투약 및 조제)"
+bill,인청구서,CNSY_ACT_FEE_INJC_FEE,"청구 비급여 행위료(주사)"
+bill,인청구서,CNSY_MDIC_INJC_FEE,"청구 비급여 의약품(주사)"
+bill,인청구서,CNSY_ANTH_EXP,청구 비급여 마취료
+bill,인청구서,CNSY_ATIO_OPER_EXP,청구 비급여 처치 수술료
+bill,인청구서,CNSY_EXAM_EXP,청구 비급여 검사료
+bill,인청구서,CNSY_PICT_DGFE,청구 비급여 영상 진단료
+bill,인청구서,CNSY_RDI_FEE,청구 비급여 방사선료
+bill,인청구서,CNSY_MDI_MATL_AMT,청구 비급여 치료재료 금액
+bill,인청구서,CNSY_RHBL_PHY_TMFE,청구 비급여 재활 물리치료료
+bill,인청구서,CNSY_PSCH_EXP,청구 비급여 정신요법료
+bill,인청구서,CNSY_WHB_BLIG_TMFE,청구 비급여 전혈 혈액성분제 치료료
+bill,인청구서,CNSY_CT_DGFE,청구 비급여 CT 진단료
+bill,인청구서,CNSY_MRI_DGFE,청구 비급여 MRI 진단료
+bill,인청구서,CNSY_PETF,청구 비급여 PET 진단료
+bill,인청구서,CNSY_USWV_DGFE,청구 비급여 초음파 진단료
+bill,인청구서,CNSY_DTPR_CRRC_TMFE,청구 비급여 보철교정 치료료
+bill,인청구서,CNSY_CTF_FEE,청구 비급여 증명서 수수료
+bill,인청구서,CNSY_ETC_AMT,청구 비급여 기타 금액
+bill,인청구서,CNSY_TRM_EXPT_AMT,청구 비급여 항목 제외 금액
+bill,인청구서,CNSY_FMCT_RPHP_AMT,청구 비급여 정액수가 요양병원 금액
+bill,인청구서,CNSY_EMB_MCOST_MET_EXP,청구 비급여 포괄수가 외 진료비
+bill,인청구서,CNSY_CRPY_INRP_AMT,청구 비급여 자보지급 산재 요양금액
+bill,인청구서,CNSY_EMGC_MNG_AMT,청구 비급여 응급 관리 금액
+bill,인청구서,CNSY_RSRV_DCTR_FEE,청구 비급여 예약 진찰료
+bill,인청구서,CNSY_EFOD24_AMT,청구 비급여 시행령 별표 2 제4호 금액
+bill,인청구서,CNSY_RCED_AMT,청구 비급여 영수증 이외 서류 금액
+bill,인청구서,cladj_hosp_grde_cd,"손해사정 병원 등급 코드 (1: 상급종합병원, 2: 종합병원, 3: 병원 4: 의원 5: 약국, 9: 기타) 예시: 1"
+bill,인청구서,med_inst_attr_cd,의료기관 속성 코드 예시: 11
+bill,인청구서,std_st_dt,기준 시작일자 예시: 1900-01-01
+bill,인청구서,std_ed_dt,기준 종료일자 예시: 2014-12-31
+hosp,입원병원통원,hosp_bzac_id,병원 거래처 ID (예: "4mi6jYzmDe")
+hosp,입원병원통원,hsp_ghr_hosp_id,입원통원 병원 ID (예: "4mO6JPSsty")
+hosp,입원병원통원,dmpe_id,피해자 ID (예: "3K6CCqItHy")
+hosp,입원병원통원,clm_id,보험 청구 ID (예: "3K6CCqJvYZ")
+hosp,입원병원통원,cus_id,고객 ID (예: "28dxew0xoG")
+hosp,입원병원통원,ctr_id,계약 ID (예: "65R3146")
+hosp,입원병원통원,cov_ins_amt_id,담보 보험금 식별자 (예: "4nrTBewnHw")
+hosp,입원병원통원,hins_amt_id,인보험금 식별자 (예: "4nrTBbi4Ze")
+hosp,입원병원통원,hins_amt_data_div_cd,"인보험금 데이터 구분 코드 (01: 인청구서, 02: 입원통원병원, 03: 진단, 04: 수술, 05: 피해기간, 06: 타사사고, 07: 한방치아, 08: 치료검사) (예: ""02"")"
+hosp,입원병원통원,cov_cd,담보 코드 (예: "630030")
+hosp,입원병원통원,rsk_unt_cd,위험 단위 코드 (예: "1D00016")
+hosp,입원병원통원,gurt_unt_cd,보장 단위 코드 (예: "1D00016091")
+hosp,입원병원통원,ins_amt_apvl_dt,보험금 결재 일자 (예: "2023-05-12")
+hosp,입원병원통원,slry_dcn_ins_amt,급여 결정 보험금 (예: 0.0)
+hosp,입원병원통원,nsry_dcn_ins_amt,비급여 결정 보험금 (예: 0.0)
+hosp,입원병원통원,dcn_ins_amt,총 결정 보험금 (예: 0.0)
+hosp,입원병원통원,acd_rct_id,사고 접수 ID (예: "3K6CCqJ7eO")
+hosp,입원병원통원,acd_rct_dt,사고 접수 일자 (예: "2013-03-29")
+hosp,입원병원통원,last_rct_dt,최종 접수 일자 (예: "2013-05-07")
+hosp,입원병원통원,ctr_obj_id,계약 목적물 ID (예: "0y4Vm1vjjb")
+hosp,입원병원통원,acd_no_yy,사고번호 연도 (예: 2012)
+hosp,입원병원통원,acd_no_seq,사고번호 순번 (예: 1658270)
+hosp,입원병원통원,acd_dt,사고 일자 (예: "2013-03-25")
+hosp,입원병원통원,pol_no,보험 증권 번호 (예: "65R3146")
+hosp,입원병원통원,sbcp_dt,청약 일자 (예: "2008-04-07")
+hosp,입원병원통원,unt_pd_cd,단위 상품 코드 (예: "60336")
+hosp,입원병원통원,inspe_cus_no,피보험자 고객번호 (예: "10023318529")
+hosp,입원병원통원,inspe_gndr_cd,피보험자 성별 코드 (예: 1)
+hosp,입원병원통원,inspe_bdt,피보험자 생년월일 (예: "870818-01-01")
+hosp,입원병원통원,dmpe_acd_attm_age,피해자 사고 당시 연령 (예: 25)
+hosp,입원병원통원,tacd_job_cd,사고 시 직업 코드 (예: "23220")
+hosp,입원병원통원,all_kr_disz_cd_con,전체 한국질병코드 (예: "M51.1")
+hosp,입원병원통원,all_obst_dgn_cd_con,장해진단코드 (예: NULL)
+hosp,입원병원통원,hsp_ghr_div_cd,입원통원구분 코드 (예: NULL)
+hosp,입원병원통원,met_tp_cd,진료유형코드 (예: "1")
+hosp,입원병원통원,met_st_dt,진료 시작일자 (예: "2013-03-25")
+hosp,입원병원통원,met_ed_dt,진료 종료일자 (예: "2013-03-27")
+hosp,입원병원통원,hosp_nm,병원명 (예: "우리들병원")
+hosp,입원병원통원,met_dd_num,진료 일수 (예: 3)
+hosp,입원병원통원,hsp_ncnt,입원 박수 (예: 0)
+hosp,입원병원통원,skrm_grde_cd,병실 등급 코드 (예: NULL)
+hosp,입원병원통원,nurs_tp_cd,간병 유형 코드 (예: NULL)
+hosp,입원병원통원,nurpe_relpe_cd,간병인 관계 코드 (예: NULL)
+hosp,입원병원통원,nurs_etp_bzac_id,간병 업체 ID (예: NULL)
+hosp,입원병원통원,nurpe_nm,간병인 이름 (예: NULL)
+hosp,입원병원통원,nurpe_use_amt,간병비 (예: NULL)
+hosp,입원병원통원,cladj_hosp_grde_cd,"손해사정 병원 등급 코드 (1: 상급종합병원, 2: 종합병원, 3: 병원 4: 의원 5: 약국, 9: 기타) (예: ""3"")"
+hosp,입원병원통원,med_inst_attr_cd,의료기관 속성 코드 (예: "31")
+hosp,입원병원통원,std_st_dt,기준 시작일자 (예: "1900-01-01")
+hosp,입원병원통원,std_ed_dt,기준 종료일자 (예: "9999-12-31")
+dgn,진단,hosp_bzac_id,병원 거래처 ID (예: "4mi6h5WEv0")
+dgn,진단,dgn_id,진단 ID (예: "3LZSm3anFq")
+dgn,진단,dmpe_id,피해자 ID (예: "3K6CCqCWhx")
+dgn,진단,clm_id,보험 청구 ID (예: "3K6CCqDPxy")
+dgn,진단,cus_id,고객 ID (예: "28dxevfSeb")
+dgn,진단,ctr_id,계약 ID (예: "6R12803")
+dgn,진단,cov_ins_amt_id,담보 보험금 식별자 (예: "4mq1Jx0Pik")
+dgn,진단,hins_amt_id,인보험금 식별자 (예: "4mq1Jv1TD5")
+dgn,진단,hins_amt_data_div_cd,"인보험금 데이터 구분 코드 (01: 인청구서, 02: 입원통원병원, 03: 진단, 04: 수술, 05: 피해기간, 06: 타사사고, 07: 한방치아, 08: 치료검사) (예: ""03"")"
+dgn,진단,cov_cd,담보 코드 (예: "610495")
+dgn,진단,rsk_unt_cd,위험 단위 코드 (예: "1I00689")
+dgn,진단,gurt_unt_cd,보장 단위 코드 (예: "1I00689001")
+dgn,진단,ins_amt_apvl_dt,보험금 결재 일자 (예: "2016-05-30")
+dgn,진단,slry_dcn_ins_amt,급여 결정 보험금 (예: 0.0)
+dgn,진단,nsry_dcn_ins_amt,비급여 결정 보험금 (예: 0.0)
+dgn,진단,dcn_ins_amt,총 결정 보험금 (예: 0.0)
+dgn,진단,acd_rct_id,사고 접수 ID (예: "3K6CCqCkIQ")
+dgn,진단,acd_rct_dt,사고 접수 일자 (예: "2013-04-17")
+dgn,진단,last_rct_dt,최종 접수 일자 (예: "2016-05-18")
+dgn,진단,ctr_obj_id,계약 목적물 ID (예: "0y4Vm2NEmx")
+dgn,진단,acd_no_yy,사고번호 연도 (예: 2013)
+dgn,진단,acd_no_seq,사고번호 순번 (예: 89898)
+dgn,진단,acd_dt,사고 일자 (예: "2013-04-09")
+dgn,진단,pol_no,보험 증권 번호 (예: "6R12803")
+dgn,진단,sbcp_dt,청약 일자 (예: "2009-08-17")
+dgn,진단,unt_pd_cd,단위 상품 코드 (예: "60402")
+dgn,진단,inspe_cus_no,피보험자 고객번호 (예: "10018193878")
+dgn,진단,inspe_gndr_cd,피보험자 성별 코드 (예: 1)
+dgn,진단,inspe_bdt,피보험자 생년월일 (예: "750415-01-01")
+dgn,진단,dmpe_acd_attm_age,피해자 사고 당시 연령 (예: 38)
+dgn,진단,tacd_job_cd,사고 시 직업 코드 (예: "12330")
+dgn,진단,all_kr_disz_cd_con,전체 한국질병코드 (예: "S62.3;M51.2")
+dgn,진단,all_obst_dgn_cd_con,장해진단코드 (예: NULL)
+dgn,진단,dgn_div_cd,진단 구분 코드 (예: "1")
+dgn,진단,hosp_nm,병원명 (예: "의원(미등록)")
+dgn,진단,tt_obst_rt,전체 장해율 (예: NULL 또는 0.0000000)
+dgn,진단,apl_std_dt,적용 기준일자 (예: "2013-04-09")
+dgn,진단,ma_kr_disz_cds,주상병 한국질병코드 (예: NULL)
+dgn,진단,sub_kr_disz_cds,부상병 한국질병코드 (예: "S62.3")
+dgn,진단,cladj_hosp_grde_cd,"손해사정 병원 등급 코드 (1: 상급종합병원, 2: 종합병원, 3: 병원 4: 의원 5: 약국, 9: 기타) (예: ""4"")"
+dgn,진단,med_inst_attr_cd,의료기관 속성 코드 (예: "41")
+dgn,진단,std_st_dt,기준 시작일자 (예: "1900-01-01")
+dgn,진단,std_ed_dt,기준 종료일자 (예: "9999-12-31")
+srop,수술,hosp_bzac_id,병원 거래처 ID (예: "4mi6dmwQhg")
+srop,수술,srop_id,수술 ID (예: "4mPebh2mW0")
+srop,수술,dmpe_id,피해자 ID (예: "4mPeX5jMlK")
+srop,수술,clm_id,보험 청구 ID (예: "4mPeboQ0r4")
+srop,수술,cus_id,고객 ID (예: "28dxeuvN03")
+srop,수술,ctr_id,계약 ID (예: "6S578161")
+srop,수술,cov_ins_amt_id,담보 보험금 식별자 (예: "4mrpsvthyU")
+srop,수술,hins_amt_id,인보험금 식별자 (예: "4mrpsopjy5")
+srop,수술,hins_amt_data_div_cd,"인보험금 데이터 구분 코드 (01: 인청구서, 02: 입원통원병원, 03: 진단, 04: 수술, 05: 피해기간, 06: 타사사고, 07: 한방치아, 08: 치료검사) (예: ""04"")"
+srop,수술,cov_cd,담보 코드 (예: "630021")
+srop,수술,rsk_unt_cd,위험 단위 코드 (예: "1D00027")
+srop,수술,gurt_unt_cd,보장 단위 코드 (예: "1D00027001")
+srop,수술,ins_amt_apvl_dt,보험금 결재 일자 (예: "2016-08-11")
+srop,수술,slry_dcn_ins_amt,급여 결정 보험금 (예: 0.0)
+srop,수술,nsry_dcn_ins_amt,비급여 결정 보험금 (예: 0.0)
+srop,수술,dcn_ins_amt,총 결정 보험금 (예: 0.0)
+srop,수술,acd_rct_id,사고 접수 ID (예: "4mPeX5iWTK")
+srop,수술,acd_rct_dt,사고 접수 일자 (예: "2013-07-09")
+srop,수술,last_rct_dt,최종 접수 일자 (예: "2016-08-10")
+srop,수술,ctr_obj_id,계약 목적물 ID (예: "0y4Vm2Pgy1")
+srop,수술,acd_no_yy,사고번호 연도 (예: 2013)
+srop,수술,acd_no_seq,사고번호 순번 (예: 570033)
+srop,수술,acd_dt,사고 일자 (예: "2013-06-23")
+srop,수술,pol_no,보험 증권 번호 (예: "6S578161")
+srop,수술,sbcp_dt,청약 일자 (예: "2011-12-30")
+srop,수술,unt_pd_cd,단위 상품 코드 (예: "60499")
+srop,수술,inspe_cus_no,피보험자 고객번호 (예: "10007209056")
+srop,수술,inspe_gndr_cd,피보험자 성별 코드 (예: 1)
+srop,수술,inspe_bdt,피보험자 생년월일 (예: "551212-01-01")
+srop,수술,dmpe_acd_attm_age,피해자 사고 당시 연령 (예: 57)
+srop,수술,tacd_job_cd,사고 시 직업 코드 (예: "11500")
+srop,수술,all_kr_disz_cd_con,전체 한국질병코드 (예: "H25.92;H33.01;H25.1")
+srop,수술,all_obst_dgn_cd_con,전체장해진단코드내용 (예: NULL)
+srop,수술,srop_div_cd,"수술 구분 코드 (01: 수술, 02: 출산) (예: ""01"")"
+srop,수술,hosp_nm,병원명 (예: "인제대학교 해운대백병원")
+srop,수술,srop_dt,수술 일자 (예: "2013-06-28")
+srop,수술,kr_disz_cd,한국질병코드 (예: "H33.01")
+srop,수술,cladj_mcost_cd_nm,손사수가코드명 (예: "BG001")
+srop,수술,adrg_cd,ADRG코드 (예: NULL)
+srop,수술,knd_srop_exp_kd_cd,"종수술비종류코드 (1:1종, 2:2종, 3:3종, 4:4종, 5:5종, H:항암방사선, N:해당없음) (예: NULL)"
+srop,수술,knd7_srop_exp_kd_cd,"7종수술비종류코드 (1:1종, 2:2종, 3:3종, 4:4종, 5:5종, 6:6종, 7:7종) (예: NULL)"
+srop,수술,cladj_hosp_grde_cd,"손해사정 병원 등급 코드 (1: 상급종합병원, 2: 종합병원, 3: 병원 4: 의원 5: 약국, 9: 기타) (예: ""2"")"
+srop,수술,med_inst_attr_cd,의료기관속성코드 (예: "21")
+srop,수술,std_st_dt,기준 시작일자 (예: "1900-01-01")
+srop,수술,std_ed_dt,기준 종료일자 (예: "9999-12-31")

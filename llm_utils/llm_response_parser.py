@@ -14,31 +14,31 @@ import re
 
 class LLMResponseParser:
     """
-    LLM 응답 문자열에서 특정 태그(<SQL>, <해석>)에 포함된 블록을 추출하는 유틸리티 클래스입니다.
+    LLM 응답 문자열에서 특정 태그(<Python>, <해석>)에 포함된 블록을 추출하는 유틸리티 클래스입니다.
 
     주요 기능:
-        - <SQL> 태그 내 ```sql ... ``` 블록에서 SQL 쿼리 추출
+        - <Python> 태그 내 ```python ... ``` 블록에서 SQL 쿼리 추출
         - <해석> 태그 내 ```plaintext ... ``` 블록에서 자연어 해석 추출
     """
 
     @staticmethod
     def extract_sql(text: str) -> str:
         """
-        <SQL> 태그 내부의 SQL 코드 블록만 추출합니다.
+        <Python> 태그 내부의 Python 코드 블록만 추출합니다.
 
         Args:
             text (str): 전체 LLM 응답 문자열.
 
         Returns:
-            str: SQL 쿼리 문자열 (```sql ... ``` 내부 텍스트).
+            str: SQL 쿼리 문자열 (```python ... ``` 내부 텍스트).
 
         Raises:
-            ValueError: <SQL> 태그 또는 SQL 코드 블록을 찾을 수 없는 경우.
+            ValueError: <Python> 태그 또는 Python 코드 블록을 찾을 수 없는 경우.
         """
-        match = re.search(r"<SQL>\s*```sql\n(.*?)```", text, re.DOTALL)
+        match = re.search(r"<Python>\s*```python\n(.*?)```", text, re.DOTALL)
         if match:
             return match.group(1).strip()
-        raise ValueError("SQL 블록을 추출할 수 없습니다.")
+        raise ValueError("Python 블록을 추출할 수 없습니다.")
 
     @staticmethod
     def extract_interpretation(text: str) -> str:

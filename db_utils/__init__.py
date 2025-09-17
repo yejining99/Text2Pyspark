@@ -5,7 +5,7 @@ from .logger import logger
 
 from .base_connector import BaseConnector
 
-from .clickhouse_connector import ClickHouseConnector
+# from .clickhouse_connector import ClickHouseConnector
 from .postgres_connector import PostgresConnector
 from .mysql_connector import MySQLConnector
 from .mariadb_connector import MariaDBConnector
@@ -46,7 +46,7 @@ def get_db_connector(db_type: Optional[str] = None, config: Optional[DBConfig] =
         config = load_config_from_env(db_type.upper())
 
         connector_map = {
-            "clickhouse": ClickHouseConnector,
+            # "clickhouse": ClickHouseConnector,
             "postgresql": PostgresConnector,
             "mysql": MySQLConnector,
             "mariadb": MariaDBConnector,

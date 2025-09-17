@@ -10,11 +10,11 @@ import streamlit as st
 PAGES = {
     "lang2sql": {
         "page": "lang2sql.py",
-        "title": "Lang2SQL",
+        "title": "Text2Pyspark",
     },
-    "graph_builder": {
-        "page": "graph_builder.py",
-        "title": "Graph Builder",
+    "DB_Builder": {
+        "page": "DB_Builder.py",
+        "title": "DB Builder",
     },
 }
 

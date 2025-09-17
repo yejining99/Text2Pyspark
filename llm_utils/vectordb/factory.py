@@ -6,7 +6,14 @@ import os
 from typing import Optional
 
 from llm_utils.vectordb.faiss_db import get_faiss_vector_db
-from llm_utils.vectordb.pgvector_db import get_pgvector_db
+
+# PGVector 관련 라이브러리 optional import
+try:
+    from llm_utils.vectordb.pgvector_db import get_pgvector_db
+    PGVECTOR_AVAILABLE = True
+except ImportError:
+    PGVECTOR_AVAILABLE = False
+    print("PGVector 관련 라이브러리가 설치되지 않았습니다. FAISS를 사용합니다.")
 
 
 def get_vector_db(
@@ -31,7 +38,12 @@ def get_vector_db(
     if vectordb_type == "faiss":
         return get_faiss_vector_db(vectordb_location)
     elif vectordb_type == "pgvector":
-        return get_pgvector_db(vectordb_location)
+        if PGVECTOR_AVAILABLE:
+            return get_pgvector_db(vectordb_location)
+        else:
+            raise ImportError(
+                "pgvector 관련 라이브러리가 설치되지 않았습니다. 'pip install pgvector langchain-postgres psycopg[binary]'를 실행하거나 'faiss'를 사용하세요."
+            )
     else:
         raise ValueError(
             f"지원하지 않는 VectorDB 타입: {vectordb_type}. 'faiss' 또는 'pgvector'를 사용하세요."
