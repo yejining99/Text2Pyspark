@@ -5,8 +5,16 @@ Lang2SQL Streamlit 애플리케이션.
 ClickHouse 데이터베이스에 실행한 결과를 출력합니다.
 """
 
-import re
+import sys
 import os
+
+# import 경로 문제 해결: 프로젝트 루트를 sys.path에 추가
+current_dir = os.path.dirname(os.path.abspath(__file__))
+project_root = os.path.dirname(current_dir)  # interface의 상위 디렉토리 (lang2sql)
+if project_root not in sys.path:
+    sys.path.insert(0, project_root)
+
+import re
 from dotenv import load_dotenv
 
 # .env 파일 로딩 (최우선 실행)

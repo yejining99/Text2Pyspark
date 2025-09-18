@@ -8,8 +8,16 @@ FAISS 데이터베이스의 상태를 확인하고 관리할 수 있는 기능�
 - 새로운 테이블 정보 추가
 """
 
-import streamlit as st
+import sys
 import os
+
+# import 경로 문제 해결: 프로젝트 루트를 sys.path에 추가
+current_dir = os.path.dirname(os.path.abspath(__file__))
+project_root = os.path.dirname(current_dir)  # interface의 상위 디렉토리 (lang2sql)
+if project_root not in sys.path:
+    sys.path.insert(0, project_root)
+
+import streamlit as st
 import json
 import pandas as pd
 from datetime import datetime
